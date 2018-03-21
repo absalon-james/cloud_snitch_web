@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" ng-app="cloudSnitch">
+  <head>
+    <meta charset="utf-8">
+    <title>Cloud Snitch</title>
+    <link href="{% static 'common/css/bootstrap.css' %}" type="text/css" rel="stylesheet">
+    <link href="{% static 'common/css/helix-ui.css' %}" type="text/css" rel="stylesheet">
+    <link href="{% static 'common/css/cloudsnitch.css' %}" type="text/css" rel="stylesheet">
+    <script src="{% static 'common/js/webcomponents-loader.js' %}" type="text/javascript"></script>
+  </head>
+  <body class="hxVertical">
+    <header id="head"></header>
+    <div id="stage" ng-controller="MainController">
+      <main id="content" class="hxBox-md">
+        <div ng-controller="PanesController">
+          <div class="hxRow">
+            <pane ng-repeat="pane in panes" ng-controller="PaneController as pane" class="hxCol hxSpan-6"></pane>
+            <addpanebox></addpanebox>
+          </div><!-- Panes Controller -->
+          <div><h1>Number of panes: {% templatetag openvariable %} numPanes {% templatetag closevariable %}</h1></div>
+          <div><button ng-click="addPane()">Add Pane</button></div>
+        </div>
+      </main>
+    </div>
+    <footer id="foot"></foot>
+    <script src="{% static 'common/js/jquery.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'common/js/bootstrap.js' %}" type="text/javascript"></script>
+    <script src="{% static 'common/js/custom-elements-es5-adapter.js' %}" type="text/javascript"></script>
+    <script src="{% static 'common/js/helix-ui.browser.js' %}" type="text/javascript"></script>
+    <script src="{% static 'common/js/angular.js' %}" type="text/javascript"></script>
+    <script type="text/javascript">
+      angular.module('cloudSnitch', []);
+    </script>
+    <script src="{% static 'common/js/service_api.js' %}" type="text/javascript"></script>
+    <script src="{% static 'common/js/directive_pane.js' %}" type="text/javascript"></script>
+    <script src="{% static 'common/js/controller_main.js' %}" type="text/javascript"></script>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+pane {
+  border: 1px solid black;
+  min-height: 700px;
+}
+
+div.empty-pane {
+  writing-mode: vertical-lr;
+  text-orientation: upright;
+}
+
+pane .pane-container {
+  padding-top: 0;
+}
+
+panetopctrl .pane-ctrls {
+  margin-bottom: 1rem;
+  background-color: #ddd;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
