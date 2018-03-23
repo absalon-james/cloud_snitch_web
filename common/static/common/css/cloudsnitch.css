@@ -1,11 +1,37 @@
 pane {
   border: 1px solid black;
-  min-height: 700px;
 }
 
-div.empty-pane {
-  writing-mode: vertical-lr;
-  text-orientation: upright;
+div.addpane {
+  height: 100%;
+  min-height: 700px;
+  width: 3rem;
+  color: #0c7c84;
+  cursor: pointer;
+  border: 1px solid #0c7c84;
+}
+
+div.addpane:hover {
+  background-color: #16b9d4;
+  border-color: transparent;
+  color: #ffffff;
+}
+
+div.addpane-wrapper-outer {
+  display: table;
+}
+
+div.addpane-wrapper-inner {
+  padding: 50% 0;
+  height: 0;
+}
+
+div.addpane-rotate {
+  transform: rotate(90deg) translateY(-105%) translateX(15%);
+  transform-origin: top left;
+  margin-top: -50%;
+  white-space: nowrap;
+  font-size: 1.5em;
 }
 
 pane .pane-container {
@@ -17,4 +43,39 @@ panetopctrl .pane-ctrls {
   background-color: #ddd;
   padding-left: 1rem;
   padding-right: 1rem;
+}
+
+.center {
+  text-align: center;
+}
+
+.hxTextCtrl.ng-invalid {
+  border: 2px solid #d32f2f;
+}
+
+.hxTextCtrl.ng-invalid:focus {
+  box-shadow: 0 0 4px rgba(211, 47, 47, 0.5);
+}
+
+div.close-outer {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.hxTable.searchResults {
+  table-layout: fixed;
+  word-break: break-all;
+}
+
+.panesContainer {
+  height: 100%;
+}
+
+.panesRow {
+  height: 100%;
+}
+
+.searchResultsContainer {
+  overflow: auto;
+  height: 700px;
 }

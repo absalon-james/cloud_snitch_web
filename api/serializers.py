@@ -7,6 +7,7 @@ from rest_framework.serializers import ChoiceField
 from rest_framework.serializers import CharField
 from rest_framework.serializers import IntegerField
 from rest_framework.serializers import ListField
+from rest_framework.serializers import SlugField
 
 from rest_framework.serializers import ValidationError
 
@@ -51,7 +52,7 @@ class PropertySerializer(BaseSerializer):
 
 class FilterSerializer(Serializer):
     """Serializer for filters on a query"""
-    prop = CharField(max_length=256, required=True)
+    prop = SlugField(max_length=256, required=True)
     operator = ChoiceField(_operators, required=True)
     value = CharField(max_length=256, required=True)
 
@@ -64,7 +65,7 @@ class SearchSerializer(Serializer):
     filters = ListField(child=FilterSerializer(), required=False)
 
     page = IntegerField(min_value=0, required=False, default=1)
-    pagesize = IntegerField(min_value=1, required=False, default=50)
+    pagesize = IntegerField(min_value=1, required=False, default=500)
 
     def validate(self, data):
         props = registry.properties(data['model'])

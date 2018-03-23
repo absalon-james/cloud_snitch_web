@@ -1,0 +1,18 @@
+<div>
+  <h5>Search Results:</h5>
+</div>
+<div class="hxBox-md searchResultsContainer">
+  <table class="hxTable searchResults">
+    <caption>{{ frame().results.length }} {{ paneObj.search.type }}s found.</caption>
+    <thead>
+      <tr>
+        <th ng-repeat="header in recordHeaders()">{{ header }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="record in frame().results track by $index">
+        <td ng-repeat="value in recordValues(record) track by $index">{{ value }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div><!-- hxBox -->

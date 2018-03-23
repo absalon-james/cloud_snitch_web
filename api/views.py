@@ -29,6 +29,16 @@ class ModelViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 
+class PathViewSet(viewsets.ViewSet):
+
+    def list(self, request):
+        paths = {}
+        for label, model in registry.models.items():
+            paths[label] = [l for l, _ in registry.path(label)]
+        serializer = ModelSerializer(paths)
+        return Response(serializer.data)
+
+
 class PropertyViewSet(viewsets.ViewSet):
 
     def list(self, request, model=None):

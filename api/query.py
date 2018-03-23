@@ -83,6 +83,8 @@ class Query:
             if registry.state_properties(label):
                 self.state_matches.append(label)
 
+            self.addreturn(label)
+
         self.matches.append((
             self.label.lower(), self.label, '({}:{})'.format(self.label.lower(), self.label)
         ))
