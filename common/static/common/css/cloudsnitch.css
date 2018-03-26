@@ -79,3 +79,11 @@ div.close-outer {
   overflow: auto;
   height: 700px;
 }
+
+.searchResults tbody tr {
+  cursor: pointer;
+}
+
+.searchResults tbody tr:hover {
+  background-color: #eeeeee;
+}

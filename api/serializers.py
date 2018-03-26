@@ -52,6 +52,7 @@ class PropertySerializer(BaseSerializer):
 
 class FilterSerializer(Serializer):
     """Serializer for filters on a query"""
+    model = ChoiceField([m.label for m in registry.models.values()])
     prop = SlugField(max_length=256, required=True)
     operator = ChoiceField(_operators, required=True)
     value = CharField(max_length=256, required=True)
@@ -68,12 +69,23 @@ class SearchSerializer(Serializer):
     pagesize = IntegerField(min_value=1, required=False, default=500)
 
     def validate(self, data):
-        props = registry.properties(data['model'])
+        model_set = set(registry.path(data['model']))
+        model_set.add(data['model'])
+
         for f in data.get('filters', []):
-            if f['prop'] not in props:
+            # Make sure filter model is in path of search model
+            if f['model'] not in model_set:
+                raise ValidationError(
+                    'Model {} not in path of {}'
+                    .format(f['model'], data['model'])
+                )
+
+            # Make sure filter property is property of filter model
+            props = registry.properties(f['model'])
+            if f['prop'] not in registry.properties(f['model']):
                 raise ValidationError(
                     'Model {} does not have property {}'.format(
-                        data['model'],
+                        f['model'],
                         f['prop']
                     )
                 )

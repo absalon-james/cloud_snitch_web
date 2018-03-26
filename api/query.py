@@ -131,7 +131,7 @@ class Query:
             raise InvalidPropertyError(label, prop)
 
         if prop in registry.state_properties(label):
-            label = registry.models[label].state_label
+            label = '{}_state'.format(label)
 
         condition = '{}.{} {} {}'.format(
             label.lower(),

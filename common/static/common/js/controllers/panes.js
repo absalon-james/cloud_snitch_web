@@ -7,17 +7,6 @@ angular.module('cloudSnitch').controller('PanesController', ['$scope', 'timeServ
     $scope.maxPanes = 2;
 
     /**
-     * Create a default filter.
-     */
-    $scope.defaultFilter = function() {
-        return {
-            property: null,
-            operator: '=',
-            value: null
-        }
-    };
-
-    /**
      * Add a pane
      */
     $scope.addPane = function() {

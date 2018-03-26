@@ -68,7 +68,12 @@ class ObjectViewSet(viewsets.ViewSet):
             .time(vd.get('time'))
 
         for f in vd.get('filters', []):
-            query.filter(f['prop'], f['operator'], f['value'])
+            query.filter(
+                f['prop'],
+                f['operator'],
+                f['value'],
+                label=f['model']
+            )
 
         count = query.count()
 

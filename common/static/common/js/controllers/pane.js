@@ -4,18 +4,39 @@
 angular.module('cloudSnitch').controller('PaneController', ['$scope', 'cloudSnitchApi', 'typesService', function($scope, cloudSnitchApi, typesService) {
 
     $scope.paneObj = {};
+    $scope.typesService = typesService;
 
     /**
      * Initialize the pane with a pane object from the parent controller.
      */
     $scope.init = function(paneObj) {
         $scope.paneObj = paneObj;
-        $scope.updateProperties();
+        $scope.updatePath();
     };
+
+    /*
+    $scope.$watch('typesService.isLoading()', function(isLoading) {
+        if (!isLoading) {
+            $scope.updatePath();
+        }
+    });
+    */
 
     $scope.frame = function() {
         var stackSize = $scope.paneObj.stack.length;
         return $scope.paneObj.stack[stackSize - 1];
+    };
+
+    /**
+     * Create a default filter.
+     */
+    $scope.defaultFilter = function() {
+        return {
+            model: $scope.paneObj.search.type,
+            property: null,
+            operator: '=',
+            value: null
+        }
     };
 
     /**
@@ -29,37 +50,15 @@ angular.module('cloudSnitch').controller('PaneController', ['$scope', 'cloudSnit
      * Remove filter
      */
     $scope.removeFilter = function(filter) {
-        var index = $scope.paneObj.search.filters.indexOf(filter);
+        var index = $scope.paneObj.search.filters.indexOf(filter)
         $scope.paneObj.search.filters.splice(index, 1);
     };
 
-    /**
-     * Builds a list of properties for filtering based on the type selected
-     * in the search.
-     */
-    $scope.updateProperties = function() {
-        $scope.paneObj.search.properties = [];
-        for (var i = 0; i < $scope.types.length; i++) {
-            var t = $scope.types[i];
-            if (t.label == $scope.paneObj.search.type) {
-                $scope.paneObj.search.properties.push(t.identity);
-                for (var j = 0; j < t.static_properties.length; j++) {
-                    $scope.paneObj.search.properties.push(t.static_properties[j]);
-                }
-                for (var j = 0; j < t.state_properties.length; j++) {
-                    $scope.paneObj.search.properties.push(t.state_properties[j]);
-                }
-                break;
-            }
-        }
+    $scope.updatePath = function() {
+        console.log("Updating path for " + $scope.paneObj.search.type);
+        $scope.path = typesService.path($scope.paneObj.search.type);
+        console.log($scope.path);
     };
-
-    /**
-     * Set up a watch on types. Types comes from api
-     */
-    $scope.$watch('types', function() {
-        $scope.updateProperties();
-    });
 
     $scope.recordHeaders = function() {
         var headers = [];
@@ -126,6 +125,10 @@ angular.module('cloudSnitch').controller('PaneController', ['$scope', 'cloudSnit
             $scope.paneObj.loading = false;
             $scope.paneObj.stack.splice(-1, 1);
         });
+    };
+
+    $scope.details = function(type, record) {
+        // do nothing
     };
 
     /**

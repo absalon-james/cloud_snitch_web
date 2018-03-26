@@ -54,6 +54,7 @@ angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', function
             var apiFilters = [];
             angular.forEach(filters, function(item) {
                 apiFilters.push({
+                    model: item.model,
                     prop: item.property,
                     operator: item.operator,
                     value: item.value

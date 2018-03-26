@@ -2,7 +2,10 @@ angular.module('cloudSnitch').factory('typesService', ['cloudSnitchApi', functio
 
     var service = {};
     service.types = [];
+    service.typesLoading = true;
     service.paths = {};
+    service.pathsLoading = true;
+    service.properties = {};
 
     service.glanceViews = {
         AptPackage: ['name', 'version'],
@@ -27,9 +30,26 @@ angular.module('cloudSnitch').factory('typesService', ['cloudSnitchApi', functio
         return service.glanceViews[label];
     };
 
+    service.updateProperties = function() {
+        service.properties = {};
+        for (var i = 0; i < service.types.length; i++) {
+            var props = [];
+            var t = service.types[i];
+            props.push(t.identity);
+            for (var j = 0; j < t.static_properties.length; j++) {
+                props.push(t.static_properties[j]);
+            }
+            for (var j = 0; j < t.state_properties.length; j++) {
+                props.push(t.state_properties[j]);
+            }
+            service.properties[t.label] = props;
+        }
+    };
+
     service.updatePaths = function() {
         cloudSnitchApi.paths().then(function(result) {
             service.paths = result;
+            service.pathsLoading = false;
         }, function(error) {
             // @TODO - Do something with errors.
             service.paths = {};
@@ -39,6 +59,8 @@ angular.module('cloudSnitch').factory('typesService', ['cloudSnitchApi', functio
     service.updateTypes = function() {
         cloudSnitchApi.types().then(function(result) {
             service.types = result;
+            service.updateProperties();
+            service.typesLoading = false;
         }, function(error) {
             // @TODO - Do something with error
             service.types = [];
@@ -46,14 +68,22 @@ angular.module('cloudSnitch').factory('typesService', ['cloudSnitchApi', functio
     }
 
     service.path = function(label) {
-        path = service.paths[label];
-        path.push(label);
-        return path;
+        var p = [];
+        var path = service.paths[label];
+        for (var i = 0; i < path.length; i++) {
+            p.push(path[i]);
+        }
+        p.push(label);
+        return p;
     };
 
     service.update = function() {
         service.updateTypes();
         service.updatePaths();
+    };
+
+    service.isLoading = function() {
+        return service.typesLoading || service.pathsLoading;
     };
 
     service.update()

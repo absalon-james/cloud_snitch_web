@@ -14,7 +14,7 @@
     <header id="head"></header>
     <div id="stage" ng-controller="MainController" resize>
       <main id="content" class="hxBox-md">
-        <div ng-controller="PanesController" class="panesContainer">
+        <div ng-if="ready" ng-controller="PanesController" class="panesContainer">
           <div class="hxRow panesRow">
             <pane ng-repeat="pane in panes" ng-controller="PaneController" ng-init="init(pane)" class="hxCol hxSpan-6"></pane>
             <addpanebox class="hxCol" ng-click="addPane()" ng-if="numPanes < maxPanes"></addpanebox>

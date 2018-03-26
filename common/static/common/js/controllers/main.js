@@ -3,11 +3,13 @@
  */
 angular.module('cloudSnitch').controller('MainController', ['$scope', 'typesService', function($scope, typesService) {
     $scope.types = [];
-    $scope._typesService = typesService;
+    $scope.typesService = typesService;
+    $scope.ready = false;
 
-
-    $scope.$watch('_typesService.types', function(types) {
-        $scope.types = types;
+    $scope.$watch('typesService.isLoading()', function(isLoading) {
+        if (!isLoading) {
+            $scope.ready = true;
+        }
     });
 
     // @TODO - Retrieve available operators from api
