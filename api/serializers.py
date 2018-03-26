@@ -1,8 +1,8 @@
-from cloud_snitch.models import registry
+import logging
 
+from cloud_snitch.models import registry
 from rest_framework.serializers import BaseSerializer
 from rest_framework.serializers import Serializer
-
 from rest_framework.serializers import ChoiceField
 from rest_framework.serializers import CharField
 from rest_framework.serializers import IntegerField
@@ -10,6 +10,9 @@ from rest_framework.serializers import ListField
 from rest_framework.serializers import SlugField
 
 from rest_framework.serializers import ValidationError
+
+
+logger = logging.getLogger(__name__)
 
 
 _operators = [
@@ -69,7 +72,7 @@ class SearchSerializer(Serializer):
     pagesize = IntegerField(min_value=1, required=False, default=500)
 
     def validate(self, data):
-        model_set = set(registry.path(data['model']))
+        model_set = set([t[0] for t in registry.path(data['model'])])
         model_set.add(data['model'])
 
         for f in data.get('filters', []):

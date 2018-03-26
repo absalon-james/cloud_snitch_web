@@ -128,7 +128,27 @@ angular.module('cloudSnitch').controller('PaneController', ['$scope', 'cloudSnit
     };
 
     $scope.details = function(type, record) {
-        // do nothing
+        $scope.paneObj.stack.push({
+            state: 'details',
+            record: record,
+            type: type
+        });
+    };
+
+    $scope.identity = function($index) {
+        var frame = $scope.paneObj.stack[$index];
+        if (frame.state != 'details') {
+            return undefined;
+        }
+        return frame.record[frame.type][typesService.identityProperty(frame.type)];
+    };
+
+    $scope.frameJump = function($index) {
+        console.log("breadcrumb clicked");
+        if ($index < $scope.paneObj.stack.length) {
+            var numSplice = $scope.paneObj.stack.length - ($index + 1);
+            $scope.paneObj.stack.splice($index + 1, numSplice);
+        }
     };
 
     /**

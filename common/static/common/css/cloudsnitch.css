@@ -77,13 +77,26 @@ div.close-outer {
 
 .searchResultsContainer {
   overflow: auto;
-  height: 700px;
+  max-height: 700px;
+}
+
+.searchResultsContainer .hxTable {
+  margin-top: 0.25rem;
 }
 
 .searchResults tbody tr {
   cursor: pointer;
 }
 
-.searchResults tbody tr:hover {
-  background-color: #eeeeee;
+.configContents {
+  max-height: 300px;
+  width: 700px;
+}
+
+.childToggle {
+  cursor: pointer;
+}
+
+.childToggle .hxCol {
+  margin-bottom: 5px;
 }

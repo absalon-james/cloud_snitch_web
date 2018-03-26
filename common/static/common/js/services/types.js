@@ -2,6 +2,7 @@ angular.module('cloudSnitch').factory('typesService', ['cloudSnitchApi', functio
 
     var service = {};
     service.types = [];
+    service.typeMap = {};
     service.typesLoading = true;
     service.paths = {};
     service.pathsLoading = true;
@@ -57,10 +58,14 @@ angular.module('cloudSnitch').factory('typesService', ['cloudSnitchApi', functio
     }
 
     service.updateTypes = function() {
+        service.typeMap = {};
         cloudSnitchApi.types().then(function(result) {
             service.types = result;
             service.updateProperties();
             service.typesLoading = false;
+            for (var i = 0; i < service.types.length; i++) {
+                service.typeMap[service.types[i].label] = service.types[i];
+            }
         }, function(error) {
             // @TODO - Do something with error
             service.types = [];
@@ -75,6 +80,15 @@ angular.module('cloudSnitch').factory('typesService', ['cloudSnitchApi', functio
         }
         p.push(label);
         return p;
+    };
+
+    service.identityProperty = function(label) {
+        var prop = undefined;
+        var type = service.typeMap[label];
+        if (type !== undefined) {
+            prop = type.identity;
+        }
+        return prop;
     };
 
     service.update = function() {
