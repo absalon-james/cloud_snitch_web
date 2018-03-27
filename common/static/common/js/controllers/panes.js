@@ -42,6 +42,16 @@ angular.module('cloudSnitch').controller('PanesController', ['$scope', 'timeServ
         }
     };
 
+    /**
+     * Copy a pane
+     */
+    $scope.copyPane = function(srcPane) {
+        if ($scope.panes.length < $scope.maxPanes) {
+            $scope.panes.push(angular.copy(srcPane));
+            $scope.numPanes++;
+        }
+    };
+
     // Start with one pane.
     $scope.addPane();
 }]);
