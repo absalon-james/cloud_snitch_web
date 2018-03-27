@@ -100,3 +100,24 @@ div.close-outer {
 .childToggle .hxCol {
   margin-bottom: 5px;
 }
+
+
+
+
+
+
+/* 
+  things that should possibly push 
+  to helix upstream below this line: 
+*/
+
+
+/* typography */
+
+.smallcap, label,
+table.hxTable thead tr th {
+  font-weight: 500;
+  font-size: .6em;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}

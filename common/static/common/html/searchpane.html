@@ -1,6 +1,5 @@
-<div>
-  <h2>Find Object:</h2>
-</div>
+<h2>Find Object:</h2>
+
 <form name="searchForm" novalidate>
   <div class="hxRow">
 
@@ -92,9 +91,9 @@
           </div>
         </div>
 
-        <div class="hxSpan-1"></div>
+        <div class=""></div>
 
-        <div class="hxSpan-2 hxBox-xs">
+        <div class="">
           <div>
             <input class="hxTextCtrl" name="filterValue" ng-model="filter.value" ng-required="true" ng-maxlength="256" />
           </div>
@@ -109,7 +108,7 @@
           </div>
         </div>
 
-        <div class="hxSpan-1 center hxBox-xs">
+        <div class="">
           <div class="close-outer">
               <button class="hxBtn hxLink" ng-click="removeFilter(filter)"><hx-icon type="times"></hx-icon></button>
           </div>
@@ -119,7 +118,7 @@
   </div><!-- hxRow -->
 
   <div class="hxRow">
-    <div class="hxBox-md hxSpan-12">
+    <div class="">
       <button class="hxBtn" ng-click="searchForm.$valid && addFilter()">Add Filter</button>
       <button class="hxBtn hxPrimary" ng-click="searchForm.$valid && search()">Search</button>
     </div>
