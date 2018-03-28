@@ -55,9 +55,7 @@ angular.module('cloudSnitch').controller('PaneController', ['$scope', 'cloudSnit
     };
 
     $scope.updatePath = function() {
-        console.log("Updating path for " + $scope.paneObj.search.type);
         $scope.path = typesService.path($scope.paneObj.search.type);
-        console.log($scope.path);
     };
 
     $scope.recordHeaders = function() {
@@ -144,7 +142,6 @@ angular.module('cloudSnitch').controller('PaneController', ['$scope', 'cloudSnit
     };
 
     $scope.frameJump = function($index) {
-        console.log("breadcrumb clicked");
         if ($index < $scope.paneObj.stack.length) {
             var numSplice = $scope.paneObj.stack.length - ($index + 1);
             $scope.paneObj.stack.splice($index + 1, numSplice);

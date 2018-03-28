@@ -10,6 +10,7 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
     $scope.children = {};
     $scope.times = [];
     $scope.time = undefined;
+    $scope.busy = false;
 
     $scope.loadChildren = function() {
         var modelChildren = typesService.typeMap[$scope.type].children;
@@ -19,15 +20,26 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
             $scope.children[key] = {
                 label: value.label,
                 records: [],
-                loading: false,
-                show: false
+                show: false,
+                busy: false
             }
             $scope.searchChildren(key, value.label);
         });
     };
 
+    $scope.isBusy = function() {
+        var busy = false;
+
+        if ($scope.busy) { busy = true; }
+        angular.forEach($scope.children, function(childObj, childRef) {
+            if (childObj.busy) { busy = true; }
+        });
+        return busy;
+    };
+
     $scope.updateTimes = function() {
         $scope.times = [];
+        $scope.busy = true;
         cloudSnitchApi.times(
             $scope.type,
             $scope.identity,
@@ -39,9 +51,11 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
                 t = t.local(t);
                 t = timeService.str(t);
                 $scope.times.push(t);
+                $scope.busy = false;
             }
         }, function(resp) {
             // @TODO - Error handling
+            $scope.busy = false;
         });
     };
 
@@ -51,11 +65,11 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
 
     $scope.searchChildren = function(childRef, childLabel) {
         $scope.children[childRef].records = [];
-        $scope.children[childRef].loading = true;
+        $scope.children[childRef].busy = true;
         cloudSnitchApi.search(
             childLabel,
             undefined,
-            $scope.paneObj.search.time,
+            $scope.time,
             [{
                 model: $scope.type,
                 property: typesService.identityProperty($scope.type),
@@ -68,10 +82,10 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
                 });
             }
         ).then(function(result) {
-            $scope.children[childRef].loading = false;
+            $scope.children[childRef].busy = false;
         }, function(resp) {
             // @TODO - error handling
-            $scope.children[childRef].loading = false;
+            $scope.children[childRef].busy = false;
         });
     };
 
@@ -105,7 +119,9 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
         }
 
         $scope.loadChildren();
-        $scope.updateTimes();
+        if ($scope.times.length == 0) {
+            $scope.updateTimes();
+        }
         $scope.time = $scope.paneObj.search.time;
     };
 
