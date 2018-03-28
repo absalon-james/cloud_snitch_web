@@ -1,4 +1,4 @@
-<h2>Find Object:</h2>
+<h2>Find Object</h2>
 
 <form name="searchForm" novalidate>
   <div class="hxRow">
@@ -10,14 +10,10 @@
       </select>
     </div>
 
-    <div class="hxSpan-1"></div>
-
     <div class="hxSpan-4 hxBox-xs">
       <label>Identity</label>
       <input class="hxTextCtrl" type="text" name="identity" ng-model="paneObj.search.identity" ng-required="false" />
     </div>
-
-    <div class="hxSpan-1"></div>
 
     <div class="hxSpan-3 hxBox-xs">
       <div>
@@ -41,7 +37,7 @@
       <h6>Filters:</h6>
 
       <div class="hxRow" ng-if="paneObj.search.filters.length == 0">
-        <div class="hxSpan-12 center"><p><i>No filters yet. Click 'Add Filter' to add a filter</i></p></div>
+        <div class="hxCol hxSpan-12 center"><p><i>No filters yet. Click 'Add Filter' to add a filter</i></p></div>
       </div>
 
       <div class="hxRow" ng-if="paneObj.search.filters.length > 0">
@@ -118,7 +114,7 @@
   </div><!-- hxRow -->
 
   <div class="hxRow">
-    <div class="">
+    <div class="hxCol">
       <button class="hxBtn" ng-click="searchForm.$valid && addFilter()">Add Filter</button>
       <button class="hxBtn hxPrimary" ng-click="searchForm.$valid && search()">Search</button>
     </div>

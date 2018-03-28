@@ -1,29 +1,82 @@
+.hxTextCtrl.ng-invalid {
+  border: 2px solid #d32f2f;
+}
+
+.hxTextCtrl.ng-invalid:focus {
+  box-shadow: 0 0 4px rgba(211, 47, 47, 0.5);
+}
+
+div.close-outer {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+
+
+
+
+.searchResults tbody tr {
+  cursor: pointer;
+}
+.childToggle {
+  cursor: pointer;
+}
+
+
+
+
+.configContents {
+  max-height: 300px;
+  width: 700px;
+}
+
+
+
+.childToggle .hxCol {
+  margin-bottom: 5px;
+}
+
+
+
+
+/* body layout */
+
+body.hxHorizontal {
+  grid-template-rows: 1.5em 1fr;
+}
+
+body > #head {
+  height : 1.5rem;
+}
+
+.panesContainer {
+  display: flex;
+  overflow: hidden;
+  height: 100vh;
+  position: relative;
+  width: 100%;
+  backface-visibility: hidden;
+  will-change: overflow;
+}
 
 pane {
-  border: 1px solid black;
+  overflow: auto;
+  height: auto;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none;
+  border-right: 1px solid black;
   width: 800px;
   height: 100%;
 }
 
-
-.panesContainer {
-    display: flex;
-    overflow: hidden;
-    height: 100vh;
-    position: relative;
-    width: 100%;
-    backface-visibility: hidden;
-    will-change: overflow;
-}
-
-pane {
-    overflow: auto;
-    height: auto;
-    -webkit-overflow-scrolling: touch;
-    -ms-overflow-style: none;
+hx-panel > hx-panelbody {
+  padding : 1rem 1.5rem;
 }
 
 
+
+
+/* add pane control */
 
 div.addpane {
   height: 100%;
@@ -59,6 +112,9 @@ div.addpane-rotate {
 
 
 
+
+/* pane controls */
+
 pane .pane-container {
   padding-top: 0;
 }
@@ -70,92 +126,7 @@ panetopctrl .pane-ctrls {
   margin-bottom: 0;
 }
 
-hx-panel > hx-panelbody {
-  padding : 1rem;
-}
 
-
-
-
-
-
-
-
-
-
-
-
-.center {
-  text-align: center;
-}
-
-.hxTextCtrl.ng-invalid {
-  border: 2px solid #d32f2f;
-}
-
-.hxTextCtrl.ng-invalid:focus {
-  box-shadow: 0 0 4px rgba(211, 47, 47, 0.5);
-}
-
-div.close-outer {
-  display: table-cell;
-  vertical-align: middle;
-}
-
-.hxTable.searchResults {
-  table-layout: fixed;
-  word-break: break-all;
-}
-
-
-
-
-/*
-
-
-.panesContainer {
-  height: 100%;
-}
-
-.panesRow {
-  height: 100%;
-}
-
-.searchResultsContainer {
-  overflow: auto;
-  max-height: 700px;
-}
-
-.searchResultsContainer .hxTable {
-  margin-top: 0.25rem;
-}
-
-.searchResults tbody tr {
-  cursor: pointer;
-}
-
-.configContents {
-  max-height: 300px;
-  width: 700px;
-}
-
-.childToggle {
-  cursor: pointer;
-}
-
-.childToggle .hxCol {
-  margin-bottom: 5px;
-}
-
-
-*/
-
-
-
-/* 
-  things that should possibly push 
-  to helix upstream below this line: 
-*/
 
 
 /* typography */
@@ -166,4 +137,26 @@ table.hxTable thead tr th {
   font-size: .6em;
   letter-spacing: 1px;
   text-transform: uppercase;
+}
+
+
+body #head #page_title {
+  line-height: 1.5rem;
+  color: white;
+  font-size: .7em;
+  font-weight: 700;
+  margin-left : .5rem;
+  font-family: 'Roboto', sans-serif;
+}
+
+.subtitle {
+  margin-top: -1rem;
+  display: block;
+  font-size: .9em;
+  font-style: italic;
+  opacity: .7;
+}
+
+.center {
+  text-align: center;
 }

@@ -1,10 +1,9 @@
 <div ng-controller="DetailsController">
   <div class="hxRow">
-    <div class="hxSpan-6 left">
+
+    <div class="hxCol hxSpan-9 left">
         <h2>{{identity}}</h2>
     </div>
-
-    <div class="hxSpan-3"></div>
 
     <div class="hxSpan-3 right">
       <select name="detailTime" ng-model="time" class="hxTextCtrl">
@@ -12,7 +11,7 @@
           <option value="{{ paneObj.search.time }}">{{ paneObj.search.time }}</option>
         </optgroup>
         <optgroup label="Changes">
-          <option ng-repeat="t in times track by $index" value="{{t}}"><hx-icon type="technical-change"></hx-icon>{{t}}</option>
+          <option ng-repeat="t in times track by $index" value="{{t}}"><hx-icon type="technical-change"></hx-icon>{{ t }}</option>
         </optgroup>
       </select>
     </div>
@@ -33,7 +32,7 @@
 
     <div ng-repeat="(childRef, childObj) in children">
       <div class="hxRow childToggle" ng-click="toggleChild(childObj)">
-        <div class="hxCol hxSpan-11"><h3>{{ childObj.records.length }} {{childObj.label}}s</h3></div>
+        <div class="hxCol hxSpan-11"><h3>{{ childObj.records.length }} {{ childObj.label }}s</h3></div>
         <div class="hxCol hxSpan-1">
           <button class="hxBtn hxLink">
             <hx-icon ng-if="childObj.show" type="angle-up"></hx-icon>

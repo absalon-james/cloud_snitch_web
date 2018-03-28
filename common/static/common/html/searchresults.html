@@ -1,7 +1,7 @@
-<h2>Search Results:</h2>
+<h2>Search Results</h2>
+<span class="subtitle">{{ frame().results.length }} {{ paneObj.search.type }}s found</span>
 
 <table class="hxTable hxHoverable hxTable--condensed searchResults">
-  <caption>{{ frame().results.length }} {{ paneObj.search.type }}s found.</caption>
   <thead>
     <tr>
       <th ng-repeat="header in recordHeaders() track by $index">{{ header }}</th>
