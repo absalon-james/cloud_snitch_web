@@ -118,16 +118,9 @@ angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', 'timeSer
                 sink(resp.data);
                 if (req.page * req.pagesize >= resp.data.count) {
                     defer.resolve({});
-                    console.log("Got everything");
                     return defer.promise
                 }
                 else {
-                    console.log(
-                        "Got " +
-                        (req.page * req.pagesize) +
-                        " of " + resp.data.count +
-                        " records"
-                    );
                     return more(page + 1);
                 }
             }, function(resp) {
