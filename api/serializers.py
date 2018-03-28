@@ -14,7 +14,6 @@ from rest_framework.serializers import ValidationError
 
 logger = logging.getLogger(__name__)
 
-
 _operators = [
     '=',
     '<>',
@@ -26,6 +25,7 @@ _operators = [
     'STARTS WITH',
     'ENDS WITH'
 ]
+
 
 class ModelSerializer(BaseSerializer):
     """Debug serializer for dicts"""
@@ -84,7 +84,6 @@ class SearchSerializer(Serializer):
                 )
 
             # Make sure filter property is property of filter model
-            props = registry.properties(f['model'])
             if f['prop'] not in registry.properties(f['model']):
                 raise ValidationError(
                     'Model {} does not have property {}'.format(
@@ -95,8 +94,8 @@ class SearchSerializer(Serializer):
         return data
 
 
-class DetailSerializer(Serializer):
+class TimesChangedSerializer(Serializer):
     """Serializer for detailed query of one object."""
     model = ChoiceField([m.label for m in registry.models.values()])
-    time = IntegerField(min_value=0, required=False)
     identity = CharField(max_length=256, required=True)
+    time = IntegerField(min_value=0, required=False)

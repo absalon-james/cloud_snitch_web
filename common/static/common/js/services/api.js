@@ -1,7 +1,16 @@
-angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', function($http, $q) {
+angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', 'timeService', function($http, $q, timeService) {
 
     var typesDeferred = $q.defer();
     var service = {};
+
+    var headers = {};
+
+    function convertTime(str) {
+        var t = timeService.fromstr(str);
+        t = timeService.utc(t);
+        t = timeService.milliseconds(t);
+        return t
+    }
 
     service.types = function() {
         return $http({
@@ -34,6 +43,34 @@ angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', function
         });
     };
 
+    service.times = function(model, identity, time) {
+        var defer = $q.defer();
+        var req = {
+            model: model,
+            identity: identity
+        };
+
+        if (time !== undefined) {
+            time = convertTime(time);
+            if (time > 0) {
+                req.time = time;
+            }
+        }
+        return $http({
+            method: 'POST',
+            url: '/api/objects/times/',
+            headers: headers,
+            data: req
+        }).then(function(resp) {
+            defer.resolve(resp.data);
+            return defer.promise;
+        }, function(resp) {
+            // Error @TODO Error handling
+            defer.reject(resp);
+            return defer.promise;
+        });
+    };
+
     service.search = function(model, identity, time, filters, sink) {
 
         var defer = $q.defer();
@@ -46,8 +83,12 @@ angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', function
             req.identity = identity;
         }
 
-        if (time !== undefined && time > 0) {
-            req.time = time;
+        if (time !== undefined) {
+            // Convert string time to timestamp
+            time = convertTime(time);
+            if (time > 0) {
+                req.time = time;
+            }
         }
 
         if (filters !== undefined) {
