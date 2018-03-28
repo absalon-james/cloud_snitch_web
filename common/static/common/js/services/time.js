@@ -21,6 +21,10 @@ angular.module('cloudSnitch').factory('timeService', ['$interval', function($int
         return m.format(format);
     };
 
+    service.fromstr = function(str) {
+        return moment(str, format);
+    };
+
     service.utc = function(m) {
         return moment(m.valueOf() - (utcOffset * 60000));
     };

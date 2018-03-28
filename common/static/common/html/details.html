@@ -1,6 +1,22 @@
 <div ng-controller="DetailsController">
-  <div>
-    <h2>{{identity}}</h2>
+  <div class="hxRow">
+    <div class="hxSpan-6 left">
+        <h2>{{identity}}</h2>
+    </div>
+
+    <div class="hxSpan-3"></div>
+
+    <div class="hxSpan-3 right">
+      <select name="detailTime" ng-model="time" class="hxTextCtrl">
+        <optgroup label="Search">
+          <option value="{{ paneObj.search.time }}">{{ paneObj.search.time }}</option>
+        </optgroup>
+        <optgroup label="Changes">
+          <option ng-repeat="t in times track by $index" value="{{t}}"><hx-icon type="technical-change"></hx-icon>{{t}}</option>
+        </optgroup>
+      </select>
+    </div>
+
   </div>
   <div>
     <table class="hxTable hxHoverable hxTable--condensed">

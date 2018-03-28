@@ -1,4 +1,3 @@
-import datetime
 import logging
 
 from cloud_snitch.models import registry
@@ -86,7 +85,9 @@ class Query:
             self.addreturn(label)
 
         self.matches.append((
-            self.label.lower(), self.label, '({}:{})'.format(self.label.lower(), self.label)
+            self.label.lower(),
+            self.label,
+            '({}:{})'.format(self.label.lower(), self.label)
         ))
         if registry.state_properties(self.label):
             self.state_matches.append(self.label)
@@ -254,7 +255,9 @@ class Query:
 
         # Add time conditions for path
         for relvar, relname, relstr in self.rels:
-            conditions.append('{}.from <= $time < {}.to'.format(relvar, relvar))
+            conditions.append(
+                '{}.from <= $time < {}.to'.format(relvar, relvar)
+            )
 
         # Add time conditions for states
         for state_match in self.state_matches:
@@ -263,7 +266,7 @@ class Query:
                     state_match.lower(),
                     state_match.lower()
                 )
-        )
+            )
 
         # If there are no conditions, return empty string
         if len(conditions) == 0:
@@ -278,7 +281,7 @@ class Query:
         :returns: Return clause of query
         :rtype: str
         """
-         # Return clause
+        # Return clause
         cypher = ' \nRETURN '
         returns = []
         for label in self.return_labels:
@@ -306,7 +309,7 @@ class Query:
                 label=self.label
             )
         for ob_varname, ob_prop, ob_dir in self._orderby:
-             ob.append('{}.{} {}'.format(ob_varname, ob_prop, ob_dir))
+            ob.append('{}.{} {}'.format(ob_varname, ob_prop, ob_dir))
         cypher += ', '.join(ob)
         return cypher
 
@@ -388,11 +391,11 @@ class Query:
                 for key, value in record[label.lower()].items():
                     obj[key] = value
                 if registry.state_properties(label):
-                    for key,value in record['{}_state'.format(label.lower())].items():
+                    state_key = '{}_state'.format(label.lower())
+                    for key, value in record[state_key].items():
                         obj[key] = value
                 row[label] = obj
             rows.append(row)
-            logger.info(row)
         return rows
 
     def page(self, page=1, pagesize=100):
@@ -400,3 +403,35 @@ class Query:
         self.skip(skip)
         self.limit(pagesize)
         return self.fetch()
+
+
+class TimesQuery:
+    """Class for querying the times an object tree has changed."""
+
+    def __init__(self, label, identity):
+        self.label = label
+        self.identity = identity
+        self.params = {'identity': identity}
+
+    def __str__(self):
+        var = self.label.lower()
+        identity_prop = registry.identity_property(self.label)
+        cypher = "MATCH p = ({}:{})-[*]->(other)".format(var, self.label)
+        cypher += "\nWHERE {}.{} = $identity".format(var, identity_prop)
+        cypher += "\nWITH relationships(p) as rels"
+        cypher += "\nUNWIND rels as r"
+        cypher += "\nreturn DISTINCT r.from as t"
+        cypher += "\nORDER BY t DESC"
+        return cypher
+
+    def _fetch(self):
+        q = str(self)
+        logger.info("Running query:\n{}".format(str(q)))
+        with get_connection().session() as session:
+            with session.begin_transaction() as tx:
+                resp = tx.run(q, **self.params)
+                return resp
+
+    def fetch(self):
+        times = [record['t'] for record in self._fetch()]
+        return times

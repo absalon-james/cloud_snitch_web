@@ -1,13 +1,15 @@
 /**
  * The details controller covers displaying object details.
  */
-angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudSnitchApi', 'typesService', function($scope, cloudSnitchApi, typesService) {
+angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudSnitchApi', 'typesService', 'timeService', function($scope, cloudSnitchApi, typesService, timeService) {
 
     $scope.record = {};
     $scope.obj = {};
     $scope.type = undefined;
     $scope.identity = "";
     $scope.children = {};
+    $scope.times = [];
+    $scope.time = undefined;
 
     $scope.loadChildren = function() {
         var modelChildren = typesService.typeMap[$scope.type].children;
@@ -25,7 +27,22 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
     };
 
     $scope.updateTimes = function() {
-        cloudSnitchApi.times($scope.type, $scope.identity);
+        $scope.times = [];
+        cloudSnitchApi.times(
+            $scope.type,
+            $scope.identity,
+            $scope.paneObj.search.time
+        ).then(function(data) {
+            for (var i = 0; i < data.times.length; i++) {
+                var t = data.times[i];
+                t = timeService.fromMilliseconds(t);
+                t = t.local(t);
+                t = timeService.str(t);
+                $scope.times.push(t);
+            }
+        }, function(resp) {
+            // @TODO - Error handling
+        });
     };
 
     $scope.toggleChild = function(childObj) {
@@ -88,7 +105,8 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
         }
 
         $scope.loadChildren();
-        // $scope.updateTimes();
+        $scope.updateTimes();
+        $scope.time = $scope.paneObj.search.time;
     };
 
     $scope.$watch('paneObj.stack.length', function(newVal) {
