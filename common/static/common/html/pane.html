@@ -1,7 +1,12 @@
-<div class="hxBox-md pane-container">
-  <panetopctrl></panetopctrl>
-  <ng-include src="'/static/common/html/breadcrumbs.html'"></ng-include>
-  <ng-include ng-if="frame().state == 'search'" src="'/static/common/html/searchpane.html'"></ng-include>
-  <ng-include ng-if="frame().state == 'results'" src="'/static/common/html/searchresults.html'"></ng-include>
-  <ng-include ng-if="frame().state == 'details'" src="'/static/common/html/details.html'"></ng-include>
-</div>
+<hx-panel>
+   
+	<panetopctrl></panetopctrl>
+
+  <hx-panelbody>
+    <ng-include src="'/static/common/html/breadcrumbs.html'"></ng-include>
+    <ng-include ng-if="frame().state == 'search'" src="'/static/common/html/searchpane.html'"></ng-include>
+    <ng-include ng-if="frame().state == 'results'" src="'/static/common/html/searchresults.html'"></ng-include>
+    <ng-include ng-if="frame().state == 'details'" src="'/static/common/html/details.html'"></ng-include>
+  </hx-panelbody>
+
+</hx-panel>

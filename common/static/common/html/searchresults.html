@@ -1,17 +1,15 @@
 <h2>Search Results:</h2>
 
-<div class="hxBox-md searchResultsContainer">
-  <table class="hxTable hxHoverable hxTable--condensed searchResults">
-    <caption>{{ frame().results.length }} {{ paneObj.search.type }}s found.</caption>
-    <thead>
-      <tr>
-        <th ng-repeat="header in recordHeaders() track by $index">{{ header }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="record in frame().results track by $index" ng-click="details(paneObj.search.type, record)">
-        <td ng-repeat="value in recordValues(record) track by $index">{{ value }}</td>
-      </tr>
-    </tbody>
-  </table>
-</div><!-- hxBox -->
+<table class="hxTable hxHoverable hxTable--condensed searchResults">
+  <caption>{{ frame().results.length }} {{ paneObj.search.type }}s found.</caption>
+  <thead>
+    <tr>
+      <th ng-repeat="header in recordHeaders() track by $index">{{ header }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="record in frame().results track by $index" ng-click="details(paneObj.search.type, record)">
+      <td ng-repeat="value in recordValues(record) track by $index">{{ value }}</td>
+    </tr>
+  </tbody>
+</table>

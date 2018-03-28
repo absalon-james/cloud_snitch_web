@@ -1,6 +1,29 @@
+
 pane {
   border: 1px solid black;
+  width: 800px;
+  height: 100%;
 }
+
+
+.panesContainer {
+    display: flex;
+    overflow: hidden;
+    height: 100vh;
+    position: relative;
+    width: 100%;
+    backface-visibility: hidden;
+    will-change: overflow;
+}
+
+pane {
+    overflow: auto;
+    height: auto;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
+}
+
+
 
 div.addpane {
   height: 100%;
@@ -34,16 +57,33 @@ div.addpane-rotate {
   font-size: 1.5em;
 }
 
+
+
 pane .pane-container {
   padding-top: 0;
 }
 
 panetopctrl .pane-ctrls {
-  margin-bottom: 1rem;
   background-color: #ddd;
   padding-left: 1rem;
   padding-right: 1rem;
+  margin-bottom: 0;
 }
+
+hx-panel > hx-panelbody {
+  padding : 1rem;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 .center {
   text-align: center;
@@ -66,6 +106,12 @@ div.close-outer {
   table-layout: fixed;
   word-break: break-all;
 }
+
+
+
+
+/*
+
 
 .panesContainer {
   height: 100%;
@@ -102,7 +148,7 @@ div.close-outer {
 }
 
 
-
+*/
 
 
 
