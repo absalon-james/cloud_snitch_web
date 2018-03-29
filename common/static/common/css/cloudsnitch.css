@@ -166,3 +166,16 @@ table.hxTable thead tr th {
   letter-spacing: 1px;
   text-transform: uppercase;
 }
+
+/* tables have too much top padding. the rest of the box models seem to have only bottom pad, this should follow the same pattern */
+table.hxTable thead tr th {
+  padding-top: 0;
+}
+
+/* hover state does not offer enough visual differentiation, especially on lower-end monitors where the contrast is too great to be visible */
+.hxTable.hxHoverable tbody tr:hover td,
+.hxTable.hxHoverable tbody tr:hover th,
+.hxTable--hover tbody tr:hover td,
+.hxTable--hover tbody tr:hover th {
+  background-color: #eee;
+}
