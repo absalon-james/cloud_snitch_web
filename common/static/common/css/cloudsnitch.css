@@ -172,7 +172,7 @@ table.hxTable thead tr th {
   padding-top: 0;
 }
 
-/* hover state does not offer enough visual differentiation, especially on lower-end monitors where the contrast is too great to be visible */
+/* hover state does not offer enough visual differentiation, especially on low-end monitors where the contrast is insufficient for this to be visible */
 .hxTable.hxHoverable tbody tr:hover td,
 .hxTable.hxHoverable tbody tr:hover th,
 .hxTable--hover tbody tr:hover td,
