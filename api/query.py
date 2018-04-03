@@ -373,8 +373,8 @@ class Query:
         if query_str is None:
             query_str = str(self)
 
-        logger.info("Running query:")
-        logger.info(query_str)
+        logger.debug("Running query:")
+        logger.debug(query_str)
 
         with get_connection().session() as session:
             with session.begin_transaction() as tx:
@@ -426,7 +426,7 @@ class TimesQuery:
 
     def _fetch(self):
         q = str(self)
-        logger.info("Running query:\n{}".format(str(q)))
+        logger.debug("Running query:\n{}".format(str(q)))
         with get_connection().session() as session:
             with session.begin_transaction() as tx:
                 resp = tx.run(q, **self.params)

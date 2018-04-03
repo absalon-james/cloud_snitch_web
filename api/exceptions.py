@@ -20,3 +20,9 @@ class InvalidPropertyError(Exception):
         """
         msg = 'Invalid property \'{}\' on \'{}\''.format(label, prop)
         super(InvalidPropertyError, self).__init__(msg)
+
+
+class JobRunningError(Exception):
+    """Error for asynchronous task still running."""
+    def __init__(self):
+        super(JobRunningError, self).__init__('Job is still running.')
