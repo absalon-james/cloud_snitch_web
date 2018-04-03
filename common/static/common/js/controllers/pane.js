@@ -65,7 +65,11 @@ angular.module('cloudSnitch').controller('PaneController', ['$scope', 'cloudSnit
             return [];
         }
 
-        angular.forEach(path, function(item) {
+        // moves last item to front of path (makes top-level first column)
+        var sortedPath = path.slice(0)
+        sortedPath.pop(sortedPath.unshift(sortedPath[sortedPath.length-1])-1)
+
+        angular.forEach(sortedPath, function(item) {
             var props = typesService.glanceProperties(item);
             for (var i = 0; i < props.length; i++) {
                 var header = item + '.' + props[i];
@@ -81,7 +85,11 @@ angular.module('cloudSnitch').controller('PaneController', ['$scope', 'cloudSnit
         var values = [];
         var path = $scope.frame().path;
 
-        angular.forEach(path, function(label) {
+        // moves last item to front of path (makes top-level first column)
+        var sortedPath = path.slice(0)
+        sortedPath.pop(sortedPath.unshift(sortedPath[sortedPath.length-1])-1)
+
+        angular.forEach(sortedPath, function(label) {
             var props = typesService.glanceProperties(label);
             for (var i = 0; i < props.length; i++) {
                 values.push(record[label][props[i]]);
