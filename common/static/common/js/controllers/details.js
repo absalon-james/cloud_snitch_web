@@ -119,9 +119,7 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
         }
 
         $scope.loadChildren();
-        if ($scope.times.length == 0) {
-            $scope.updateTimes();
-        }
+        $scope.updateTimes();
         $scope.time = $scope.paneObj.search.time;
     };
 
