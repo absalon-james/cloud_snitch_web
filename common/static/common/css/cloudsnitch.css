@@ -107,7 +107,8 @@ pane .pane-container {
   padding-top: 0;
 }
 
-panetopctrl .pane-ctrls {
+panetopctrl .pane-ctrls,
+.diffContainer .diffCtrls {
   background-color: #ddd;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -178,4 +179,32 @@ table.hxTable thead tr th {
 .hxTable--hover tbody tr:hover td,
 .hxTable--hover tbody tr:hover th {
   background-color: #eee;
+}
+
+.diffContainer {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  border: 1px solid #0c7c84;
+  background-color: #fff;
+}
+
+.right {
+  text-align: right;
+}
+
+.left {
+  text-align: left;
+}
+
+svg#diff path.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+.node {
+  cursor: pointer;
 }

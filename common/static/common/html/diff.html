@@ -1,0 +1,39 @@
+<hx-panel ng-controller="DiffController">
+  <hx-panelhead>
+    <div class="hxRow diffCtrls">
+      <div class="hxSpan-6 left">
+        <h4>
+          Diffing {{diff.type}}: {{diff.id}} at time {{diff.leftTime}} and {{diff.rightTime}}
+        </h4>
+      </div>
+      <div class="hxSpan-6 right">
+        <div class="btnGrpRight hxBtnGroup hxLink">
+          <button class="hxBtn" ng-click="closeDiff()"><hx-icon type="times"></hx-icon></button>
+        </div>
+      </div>
+    </div>
+  </hx-panelhead>
+  <hx-panelbody>
+    <div ng-if="state == 'loadingStructure'">Loading the diff.</div>
+    <svg id="diff" ng-show="state != 'loadingStructure'" width="1000" height="1000">
+      <defs>
+        <radialGradient id="addedGradient" cx="50%" cy="50%" r="50%">
+          <!-- dark #1B5E20 middle #43A047 light #81C784 -->
+          <stop stop-color="#81C784" offset="0%" />
+          <stop stop-color="#43A047" offset="50%" />
+          <stop stop-color="#1B5E20" offset="100%" />
+        </radialGradient>
+        <radialGradient id="removedGradient" cx="50%" cy="50%" r="50%">
+          <stop stop-color="#ef5350" offset="0%" />
+          <stop stop-color="#d32f2f" offset="50%" />
+          <stop stop-color="#b71c1c" offset="100%" />
+        </radialGradient>
+        <radialGradient id="unchangedGradient" cx="50%" cy="50%" r="50%">
+          <stop stop-color="#90A4AE" offset="0%" />
+          <stop stop-color="#546E7A" offset="50%" />
+          <stop stop-color="#37474F" offset="100%" />
+        </radialGradient>
+      </defs>
+    </svg>
+  </hx-panelbody>
+</hx-panel>

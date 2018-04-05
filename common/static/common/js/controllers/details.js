@@ -3,17 +3,14 @@
  */
 angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudSnitchApi', 'typesService', 'timeService', function($scope, cloudSnitchApi, typesService, timeService) {
 
-    $scope.record = {};
+    $scope.f = undefined;
     $scope.obj = {};
-    $scope.type = undefined;
     $scope.identity = "";
     $scope.children = {};
-    $scope.times = [];
-    $scope.time = undefined;
     $scope.busy = false;
 
     $scope.loadChildren = function() {
-        var modelChildren = typesService.typeMap[$scope.type].children;
+        var modelChildren = typesService.typeMap[$scope.f.type].children;
         $scope.children = {};
 
         angular.forEach(modelChildren, function(value, key) {
@@ -38,10 +35,12 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
     };
 
     $scope.updateTimes = function() {
-        $scope.times = [];
+        if ($scope.f.times !== undefined)
+            return;
+        $scope.f.times = [];
         $scope.busy = true;
         cloudSnitchApi.times(
-            $scope.type,
+            $scope.f.type,
             $scope.identity,
             $scope.paneObj.search.time
         ).then(function(data) {
@@ -50,7 +49,7 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
                 t = timeService.fromMilliseconds(t);
                 t = t.local(t);
                 t = timeService.str(t);
-                $scope.times.push(t);
+                $scope.f.times.push(t);
                 $scope.busy = false;
             }
         }, function(resp) {
@@ -69,10 +68,10 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
         cloudSnitchApi.search(
             childLabel,
             undefined,
-            $scope.time,
+            $scope.f.time,
             [{
-                model: $scope.type,
-                property: typesService.identityProperty($scope.type),
+                model: $scope.f.type,
+                property: typesService.identityProperty($scope.f.type),
                 operator: '=',
                 value: $scope.identity
             }],
@@ -108,19 +107,18 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
      * Initialize the details with object and object type.
      */
     $scope.update = function() {
-        var frame = $scope.frame();
-        $scope.record = frame.record;
-        $scope.type = frame.type;
-        $scope.obj = frame.record[frame.type];
+        $scope.f = $scope.frame();
+        $scope.obj = $scope.f.record[$scope.f.type];
 
-        var prop = typesService.identityProperty($scope.type);
+        var prop = typesService.identityProperty($scope.f.type);
         if (prop !== undefined) {
             $scope.identity = $scope.obj[prop];
         }
 
         $scope.loadChildren();
         $scope.updateTimes();
-        $scope.time = $scope.paneObj.search.time;
+        if ($scope.f.time === undefined)
+            $scope.f.time = $scope.paneObj.search.time;
     };
 
     $scope.$watch('paneObj.stack.length', function(newVal) {

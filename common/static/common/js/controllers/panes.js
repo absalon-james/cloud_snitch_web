@@ -1,10 +1,11 @@
 /**
  * Controller for the multiple panes.
  */
-angular.module('cloudSnitch').controller('PanesController', ['$scope', 'timeService', function($scope, timeService) {
+angular.module('cloudSnitch').controller('PanesController', ['$scope', 'timeService', 'typesService', function($scope, timeService, typesService) {
     $scope.panes = [];
     $scope.numPanes = 0;
     $scope.maxPanes = 2;
+    $scope.diff = undefined;
 
     /**
      * Add a pane
@@ -51,6 +52,55 @@ angular.module('cloudSnitch').controller('PanesController', ['$scope', 'timeServ
             $scope.numPanes++;
         }
     };
+
+    $scope.diffable = function() {
+        if ($scope.panes.length == 2) {
+            var stackSize = $scope.panes[0].stack.length;
+            var a = $scope.panes[0].stack[stackSize - 1];
+
+            stackSize = $scope.panes[1].stack.length;
+            var b = $scope.panes[1].stack[stackSize - 1];
+
+            if (a.state != 'details' || b.state != 'details') {
+                console.log("Not diffable: both must be details");
+                return false
+            }
+
+            if (a.type != b.type) {
+                return false
+            }
+
+            var aId = a.record[a.type][typesService.identityProperty(a.type)];
+            var bId = b.record[b.type][typesService.identityProperty(b.type)];
+            if (aId != bId) {
+                return false
+            }
+
+            return true;
+        }
+        return false;
+    };
+
+    $scope.showDiff = function() {
+        console.log("Showing diff");
+        var stackSize = $scope.panes[0].stack.length;
+        var a = $scope.panes[0].stack[stackSize - 1];
+
+        stackSize = $scope.panes[1].stack.length;
+        var b = $scope.panes[1].stack[stackSize - 1];
+
+        $scope.diff = {
+            type: a.type,
+            id: a.record[a.type][typesService.identityProperty(a.type)],
+            leftTime: a.time,
+            rightTime: b.time
+        }
+    };
+
+    $scope.closeDiff = function() {
+        console.log("Closing diff...");
+        $scope.diff = undefined;
+    }
 
     // Start with one pane.
     $scope.addPane();

@@ -110,7 +110,7 @@ angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', 'timeSer
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept-Type': 'application.json'
+                    'Accept-Type': 'application/json'
                 },
                 url: '/api/objects/search/',
                 data: req
@@ -131,6 +131,66 @@ angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', 'timeSer
         }
 
         return more(1);
+    };
+
+    service.diffStructure = function(model, identity, leftTime, rightTime) {
+        var req = {
+            model: model,
+            identity:identity,
+            left_time: convertTime(leftTime),
+            right_time: convertTime(rightTime)
+        };
+        console.log("Sending diff structure request with:");
+        console.log(req);
+        var defer = $q.defer()
+        return $http({
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept-Type': 'application/json'
+            },
+            url: '/api/objectdiffs/structure/',
+            data: req
+        }).then(function(resp) {
+            // Success
+            defer.resolve(resp.data);
+            return defer.promise;
+        }, function(resp) {
+            // Error
+            defer.reject(resp);
+            return defer.promise;
+        });
+    };
+
+    service.diffNodes = function(model, identity, leftTime, rightTime, offset, limit) {
+        var req = {
+            model: model,
+            identity:identity,
+            left_time: convertTime(leftTime),
+            right_time: convertTime(rightTime),
+            offset: offset,
+            limit: limit
+        };
+        console.log("Sendiing diff nodes request with:");
+        console.log(req);
+        var defer = $q.defer()
+        return $http({
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept-Type': 'application/json'
+            },
+            url: '/api/objectdiffs/nodes/',
+            data: req
+        }).then(function(resp) {
+            // Success
+            defer.resolve(resp.data);
+            return defer.promise;
+        }, function(resp) {
+            // Error
+            defer.reject(resp);
+            return defer.promise;
+        });
     };
 
     return service;

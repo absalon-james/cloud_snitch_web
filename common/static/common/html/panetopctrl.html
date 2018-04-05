@@ -13,6 +13,7 @@
       <div class="btnGrpRight hxBtnGroup hxLink">
         <button class="hxBtn" ng-click="back()" ng-disabled="paneObj.stack.length <= 1"><hx-icon type="kbd-arrow-left"></hx-icon></button>
         <button class="hxBtn" ng-click="copyPane(paneObj)" ng-disabled="panes.length > 1"><hx-icon type="copy"></hx-icon></button>
+        <button class="hxBtn" ng-click="showDiff()" ng-disabled="!diffable()"><hx-icon type="technical-change"></hx-icon></button>
         <button class="hxBtn" ng-click="close()"><hx-icon type="times"></hx-icon></button>
       </div>
     </div>
