@@ -24,8 +24,8 @@
         <tr ng-repeat="(key, value) in obj">
             <td>{{ key }}</td>
             <td>
-                <pre class="configContents" ng-if="type == 'Configfile' && key == 'contents'"><code>{{ value }}</code></pre>
-                <span ng-if="!(type == 'Configfile' && key == 'contents')">{{ value }}</span>
+                <pre class="configContents" ng-if="f.type == 'Configfile' && key == 'contents'"><code>{{ value }}</code></pre>
+                <span ng-if="!(f.type == 'Configfile' && key == 'contents')">{{ value }}</span>
             </td>
         </tr>
       </tbody>
