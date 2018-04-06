@@ -8,6 +8,7 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
     $scope.identity = "";
     $scope.children = {};
     $scope.busy = false;
+    $scope.objectBusy = false;
 
     $scope.loadChildren = function() {
         var modelChildren = typesService.typeMap[$scope.f.type].children;
@@ -28,6 +29,7 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
         var busy = false;
 
         if ($scope.busy) { busy = true; }
+        if ($scope.objectBusy) { busy = true; }
         angular.forEach($scope.children, function(childObj, childRef) {
             if (childObj.busy) { busy = true; }
         });
@@ -55,6 +57,30 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
         }, function(resp) {
             // @TODO - Error handling
             $scope.busy = false;
+        });
+    };
+
+    $scope.updateObject = function() {
+        $scope.objectBusy = true;
+        console.log("Updating the object");
+        cloudSnitchApi.search(
+            $scope.f.type,
+            $scope.identity,
+            $scope.f.time,
+            undefined,
+            function(data) {
+                if (data.records.length > 0) {
+                    console.log("Setting record and object.");
+                    $scope.f.record = data.records[0];
+                    $scope.obj = $scope.f.record[$scope.f.type];
+                }
+            }
+        ).then(function(result) {
+            console.log("Finished updating object");
+            $scope.objectBusy = false;
+        }, function(resp) {
+            console.log("Error updating object - " + resp);
+            $scope.objectBusy = false;
         });
     };
 
@@ -112,10 +138,13 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
 
         var prop = typesService.identityProperty($scope.f.type);
         if (prop !== undefined) {
+            console.log("Identity property is " + prop);
             $scope.identity = $scope.obj[prop];
+            console.log("Identity value is " + $scope.identity);
         }
 
         $scope.loadChildren();
+        $scope.updateObject();
         $scope.updateTimes();
         if ($scope.f.time === undefined)
             $scope.f.time = $scope.paneObj.search.time;
