@@ -27,6 +27,25 @@ angular.module('cloudSnitch').factory('typesService', ['cloudSnitchApi', functio
         Virtualenv: ['path'],
     }
 
+    service.diffLabelView = {
+        AptPackage: 'name',
+        ConfigFile: 'name',
+        Device: 'name',
+        Environment: 'name',
+        GitRemote: 'name',
+        GitRepo: 'path',
+        GitUntrackedFile: 'path',
+        GitUrl: 'url',
+        Host: 'hostname',
+        Interface: 'device',
+        Mount: 'mount',
+        NameServer: 'ip',
+        Partition: 'name',
+        PythonPackage: 'name',
+        Uservar: 'name',
+        Virtualenv: 'path'
+    };
+
     service.glanceProperties = function(label) {
         return service.glanceViews[label];
     };

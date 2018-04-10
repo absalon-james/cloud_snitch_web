@@ -79,6 +79,7 @@ angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', 'timeSer
             page: 1,
             pagesize: 500
         };
+
         if (identity !== undefined && identity != "") {
             req.identity = identity;
         }
@@ -140,8 +141,6 @@ angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', 'timeSer
             left_time: convertTime(leftTime),
             right_time: convertTime(rightTime)
         };
-        console.log("Sending diff structure request with:");
-        console.log(req);
         var defer = $q.defer()
         return $http({
             method: 'POST',
@@ -171,8 +170,6 @@ angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', 'timeSer
             offset: offset,
             limit: limit
         };
-        console.log("Sendiing diff nodes request with:");
-        console.log(req);
         var defer = $q.defer()
         return $http({
             method: 'POST',

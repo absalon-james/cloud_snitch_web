@@ -15,7 +15,36 @@
   </hx-panelhead>
   <hx-panelbody>
     <div ng-if="state == 'loadingStructure'">Loading the diff.</div>
-    <svg id="diff" ng-show="state != 'loadingStructure'" width="1000" height="1000">
+    <div ng-if="detailNode && detailNodeType" class="diffNodeDetail hxBox-xl">
+      <hx-panel>
+        <hx-panelhead>
+          <h3>{{ detailNodeType }}: {{ detailNodeId }}</h3>
+        </hx-panelhead>
+        <hx-panelbody>
+          <table class="hxTable hxHoverable hxTable--condensed">
+            <thead>
+              <tr>
+                <th></th>
+                <th>{{ diff.leftTime }}</th>
+                <th>{{ diff.rightTime }}</th>
+             </tr>
+            </head>
+            <tbody>
+              <tr ng-repeat="prop in detailProps()">
+                <td>{{ prop }}</td>
+                <td class="{{ detailProp(prop, 'left').css }}">{{ detailProp(prop, 'left').val }}</td>
+                <td class="{{ detailProp(prop, 'right').css }}">{{ detailProp(prop, 'right').val }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </hx-panelbody>
+        <hx-panelfoot>
+          <button class="hxBtn hxPrimary" ng-click="closeDetail()">Close</button>
+        </hx-panelfoot>
+      </hx-panel>
+    </div>
+
+    <svg id="diff" ng-show="state != 'loadingStructure'">
       <defs>
         <radialGradient id="addedGradient" cx="50%" cy="50%" r="50%">
           <!-- dark #1B5E20 middle #43A047 light #81C784 -->

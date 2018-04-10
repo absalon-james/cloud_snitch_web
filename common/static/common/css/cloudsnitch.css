@@ -199,6 +199,11 @@ table.hxTable thead tr th {
   text-align: left;
 }
 
+svg#diff {
+  width: 100%;
+  height: 100%;
+}
+
 svg#diff path.link {
   fill: none;
   stroke: #ccc;
@@ -207,4 +212,28 @@ svg#diff path.link {
 
 .node {
   cursor: pointer;
+}
+
+
+div.diffNodeDetail {
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    max-width: 1000px;
+    border: 1px solid #0c7c84;
+    background-color: #fff;
+}
+
+div.diffNodeDetail hx-panel {
+    max-height:500px;
+}
+
+.diffLeft {
+    background-color: #EF9A9A;
+    color: #B71C1C;
+}
+
+.diffRight {
+    background-color: #C8E6C9;
+    color: #1B5E20;
 }

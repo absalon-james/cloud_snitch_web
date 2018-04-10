@@ -62,7 +62,6 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
 
     $scope.updateObject = function() {
         $scope.objectBusy = true;
-        console.log("Updating the object");
         cloudSnitchApi.search(
             $scope.f.type,
             $scope.identity,
@@ -70,16 +69,13 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
             undefined,
             function(data) {
                 if (data.records.length > 0) {
-                    console.log("Setting record and object.");
                     $scope.f.record = data.records[0];
                     $scope.obj = $scope.f.record[$scope.f.type];
                 }
             }
         ).then(function(result) {
-            console.log("Finished updating object");
             $scope.objectBusy = false;
         }, function(resp) {
-            console.log("Error updating object - " + resp);
             $scope.objectBusy = false;
         });
     };
@@ -138,9 +134,7 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
 
         var prop = typesService.identityProperty($scope.f.type);
         if (prop !== undefined) {
-            console.log("Identity property is " + prop);
             $scope.identity = $scope.obj[prop];
-            console.log("Identity value is " + $scope.identity);
         }
 
         $scope.loadChildren();

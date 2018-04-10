@@ -1,13 +1,17 @@
 /**
  * The details controller covers displaying object details.
  */
-angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval', 'cloudSnitchApi', 'typesService', 'timeService', function($scope, $interval, cloudSnitchApi, typesService, timeService) {
+angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval', '$window', 'cloudSnitchApi', 'typesService', 'timeService', function($scope, $interval, $window, cloudSnitchApi, typesService, timeService) {
 
     $scope.frame = undefined;
     $scope.nodeMap = undefined;
     $scope.nodes = undefined;
     $scope.nodeCount = 0;
     $scope.state = 'loadingStructure';
+
+    $scope.detailNode = undefined;
+    $scope.detailNodeType = undefined;
+    $scope.detailNodeId = undefined;
 
     var pollStructure;
     var pollNodes;
@@ -19,44 +23,114 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
     var margin = {
         top: 20,
         bottom: 20,
-        right: 20,
-        left: 20
+        right: 250,
+        left: 250
     }
 
-    var tree = d3.tree();
-    var svgSize = undefined;
-    var treeSize = undefined;
+    var tree;
+    var root;
 
+    var nodeRadius = 10;
+
+    var svg = undefined;
+    var g = undefined;
+
+    /**
+     * Stop controller from polling for structure.
+     */
     function stopPolling() {
-        console.log('Stopping the polling');
         if (angular.isDefined(pollStructure)) {
             $interval.cancel(pollStructure);
             pollStructure = undefined;
         }
     };
 
+    /**
+     * Stop controller for polling for nodes.
+     */
     function stopPollingNodes() {
-        console.log('Stopping polling of nodes');
         if (angular.isDefined(pollNodes)) {
             $interval.cancel(pollNodes);
             pollNodes = undefined;
         }
     }
 
-    function sizeTree() {
+    /**
+     * Comparison function for sorting siblings in diff tree.
+     */
+    function siblingCompare(a, b) {
+        var d = a.data.model.localeCompare(b.data.model);
+        if (d == 0) {
+            d = a.data.id.localeCompare(b.data.id);
+        }
+        return d;
     }
 
+    /**
+     * Compute size of svg and the tree.
+     */
+    function sizeTree() {
+        var p = svg.select(function() {
+            return this.parentNode;
+        });
+        svg.attr('width', 1);
+        svg.attr('height', 1);
+
+        var pNode = p.node();
+        var rect = pNode.getBoundingClientRect();
+        var style = window.getComputedStyle(pNode);
+        var paddingLeft = parseInt(style.getPropertyValue('padding-left'));
+        var paddingRight = parseInt(style.getPropertyValue('padding-right'));
+        var paddingTop = parseInt(style.getPropertyValue('padding-top'));
+        var paddingBottom = parseInt(style.getPropertyValue('padding-bottom'));
+
+        var svgHeight = rect.height - paddingTop - paddingBottom;
+        var svgWidth = rect.width - paddingLeft - paddingRight;
+        svg.attr('height', svgHeight);
+        svg.attr('width', svgWidth);
+
+        var sizeX = svgWidth - margin.right - margin.left;
+        var sizeY = svgHeight - margin.bottom - margin.top;
+        return {x: sizeX, y: sizeY};
+    }
+
+    /**
+     * Offset the tree containing "g" element by margin.
+     */
+    function translateTree() {
+        g.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+    }
+
+    /**
+     * Render the tree.
+     */
     function render() {
-        var svg = d3.select('svg#diff');
-        var g = svg.append('g').attr('transform', 'translate(' + margin.top + ',' + margin.left+ ')');
+        // Get the svg element
+        if (!angular.isDefined(svg)) { svg = d3.select('svg#diff'); }
+
+        // Make a svg g element if not defined.
+        if (!angular.isDefined(g)) { g = svg.append('g'); }
+        g.html('');
+
+        // Start the tree
+        tree = d3.tree();
 
         // Calculate size svg should be.
         // Calcule size tree should be including margin.
+        s = sizeTree();
+        tree.size([s.y, s.x]);
 
-        tree.size([800, 800]);
-        var root = d3.hierarchy($scope.frame);
+        // Offset tree for margin
+        translateTree();
+
+        // Make the data heirarchy
+        if (!angular.isDefined(root)) {
+            root = d3.hierarchy($scope.frame);
+            root.sort(siblingCompare);
+        }
+
+        // Pass heirarchy to tree
         tree(root);
-
 
         var link = g.selectAll(".link")
             .data(tree(root).links())
@@ -74,7 +148,6 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
                     else
                         classes += ' node--leaf';
 
-                    console.log("Checking side:");
                     console.log(d);
                     switch (d.data.side) {
                         case 'left':
@@ -93,8 +166,10 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
                     return "translate(" + d.y + "," + d.x + ")";
                 });
 
+        node.on('click', nodeClickHandler);
+
         node.append("circle")
-            .attr("r", 15)
+            .attr("r", nodeRadius)
             .attr("fill", function(d) {
                 var fill = 'url(';
                 switch (d.data.side) {
@@ -112,15 +187,47 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
             });
         node.append("text")
             .attr("dy", 3)
-            .attr("x", function(d) { return d.children ? 15: -15})
-            .style("text-anchor", function(d) { return d.children ? "start": "end"; })
+            .attr("x", function(d) { return d.children ? -15: 15})
+            .style("text-anchor", function(d) { return d.children ? "end": "start"; })
             .text(function(d) {
                 return d.data.id;
             });
     }
 
+    function nodeProp(node, prop) {
+        if (angular.isDefined(node.both[prop])) { return node.both[prop]; }
+        if (angular.isDefined(node.right[prop])) { return node.right[prop]; }
+        if (angular.isDefined(node.left[prop])) { return node.left[prop]; }
+        return "";
+    }
+
+    function updateLabels() {
+        console.log("Updating the labels");
+
+        if (!angular.isDefined(tree) || !angular.isDefined(root)) { return; }
+
+        console.log("Finding node enter");
+        var node = g.selectAll(".node")
+
+        node.selectAll("text")
+            .text(function(d) {
+                console.log("Updating " + d.data.id);
+                var index = $scope.nodeMap[d.data.model][d.data.id];
+                console.log(`Node: ${index}`);
+                var node = $scope.nodes[index];
+                console.log("Node: "); console.log(node);
+                var label = d.data.model + ": ";
+                var labelProp = typesService.diffLabelView[d.data.model];
+                if (node && angular.isDefined(labelProp)) {
+                    label += nodeProp(node, labelProp);
+                } else {
+                    label += d.data.id;
+                }
+                return label;
+            });
+    };
+
     function getNodes() {
-        console.log("Polling for nodes");
         var offset = nodeOffset;
         cloudSnitchApi.diffNodes($scope.diff.type, $scope.diff.id, $scope.diff.leftTime, $scope.diff.rightTime, offset, nodePageSize)
         .then(function(result) {
@@ -138,20 +245,78 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
             // Update node offset for next polling
             nodeOffset += result.nodes.length;
 
-            console.log("nodes: ");
-            console.log($scope.nodes);
-
             // Check if this is the last request
             if (result.nodes.length < nodePageSize) {
                 stopPollingNodes();
+                // Update labels
+                console.log("Got the nodes");
+                console.log($scope.nodes);
+                console.log("Calling update labels:");
+                updateLabels();
             }
         }, function(resp) {
             console.log("Error obtaining nodes.");
         });
     }
 
+    function nodeClickHandler(d) {
+        console.log(`Node for ${d.data.id} clicked`);
+        var index = $scope.nodeMap[d.data.model][d.data.id];
+        console.log("Node index is " + index);
+        console.log($scope.nodeMap);
+        if (angular.isDefined(index) && $scope.nodes[index]) {
+            console.log("Setting the details");
+            $scope.$apply(function() {
+                $scope.detailNodeType = d.data.model;
+                $scope.detailNode = $scope.nodes[index];
+                $scope.detailNodeId = d.data.id;
+            });
+        }
+    }
+
+    $scope.detailProps = function() {
+        var props = [];
+        angular.forEach($scope.detailNode.left, function(value, key) {
+            props.push(key);
+        });
+        angular.forEach($scope.detailNode.right, function(value, key) {
+            props.push(key);
+        });
+        angular.forEach($scope.detailNode.both, function(value, key) {
+            props.push(key);
+        });
+        props = props.filter(function(value, index, self) {
+            return self.indexOf(value) === index;
+        });
+        props.sort();
+        return props;
+    }
+
+    $scope.detailProp = function(prop, side) {
+        var r = {
+            val: '',
+            css: ''
+        }
+        if (angular.isDefined($scope.detailNode.both[prop])) {
+            r.val = $scope.detailNode.both[prop];
+        }
+        else {
+            r.val = $scope.detailNode[side][prop] || '';
+            if (side == 'left')
+                r.css = 'diffLeft';
+            else
+                r.css = 'diffRight';
+        }
+        return r;
+    };
+
+    $scope.closeDetail = function () {
+        $scope.detailNode = undefined;
+        $scope.detailNodeType = undefined;
+        $scope.detailNodeId = undefined;
+    }
+
     function getStructure() {
-        console.log("Polling for structure");
         cloudSnitchApi.diffStructure($scope.diff.type, $scope.diff.id, $scope.diff.leftTime, $scope.diff.rightTime)
         .then(function(result) {
 
@@ -166,8 +331,9 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
             $scope.nodeMap = result.nodemap;
             $scope.nodeCount = result.nodecount;
             $scope.nodes = new Array($scope.nodeCount);
-            console.log("Got the diff data");
+            console.log("Got the structure.");
             console.log($scope.frame);
+            console.log($scope.nodeMap);
             pollNodes = $interval(getNodes, pollInterval);
             render();
         }, function(resp) {
@@ -191,6 +357,12 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
     $scope.$on('$destroy', function() {
         stopPolling();
         stopPollingNodes();
+    });
+
+    angular.element($window).bind('resize', function() {
+        if ($scope.state != 'loadingStructure') {
+            render();
+        }
     });
 
 }]);
