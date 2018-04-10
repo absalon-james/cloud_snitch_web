@@ -30,6 +30,7 @@ class Node:
         self.children = {}
         self.changed = False
         self.cleaned = False
+        self.rel_changed = False
 
     @property
     def dirty(self):
@@ -39,7 +40,7 @@ class Node:
         :rtype: bool
         """
         self.clean()
-        return self.left_props or self.right_props
+        return self.left_props or self.right_props or self.rel_changed
 
     def update(self, d, side):
         """Update properties by d
@@ -69,6 +70,12 @@ class Node:
         for i in toremove:
             del self.left_props[i]
             del self.right_props[i]
+
+        # Check relationships:
+        for model, modeldict in self.children.items():
+            for identity, reldict in modeldict.items():
+                if reldict['side'] != 'both':
+                    self.rel_changed = True
 
         # Mark as cleaned.
         self.cleaned = True
@@ -119,6 +126,8 @@ class Node:
             if identity in self.children[model]:
                 if self.children[model][identity]['side'] == 'both':
                     del self.children[model][identity]
+                    return True
+        return False
 
     def todict(self):
         """Dictionary representation of the node.
@@ -340,9 +349,13 @@ class Diff:
             # Remove unchanged children from parents
             for identity, node in nodedict.items():
                 if not node.changed:
-                    for parent in node.parents:
-                        parent.remove_child(model, identity)
-                    toremove.append(identity)
+                    # Add to remove list if removed from every parent
+                    removed = [
+                        p.remove_child(model, identity)
+                        for p in node.parents
+                    ]
+                    if all(removed):
+                        toremove.append(identity)
             # Remove unchanged nodes from datasructure
             for key in toremove:
                 del nodedict[key]
