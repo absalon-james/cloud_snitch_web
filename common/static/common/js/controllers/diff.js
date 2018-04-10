@@ -67,6 +67,21 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
     }
 
     /**
+     * Compute label of a node.
+     */
+    function label(d) {
+        var index = $scope.nodeMap[d.data.model][d.data.id];
+        var node = $scope.nodes[index];
+        var label = d.data.model + ": ";
+        var labelProp = typesService.diffLabelView[d.data.model];
+        if (node && angular.isDefined(labelProp))
+            label += nodeProp(node, labelProp);
+        else
+            label += d.data.id;
+        return label;
+    }
+
+    /**
      * Compute size of svg and the tree.
      */
     function sizeTree() {
@@ -148,7 +163,6 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
                     else
                         classes += ' node--leaf';
 
-                    console.log(d);
                     switch (d.data.side) {
                         case 'left':
                             classes += ' removed';
@@ -189,9 +203,7 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
             .attr("dy", 3)
             .attr("x", function(d) { return d.children ? -15: 15})
             .style("text-anchor", function(d) { return d.children ? "end": "start"; })
-            .text(function(d) {
-                return d.data.id;
-            });
+            .text(label);
     }
 
     function nodeProp(node, prop) {
@@ -202,29 +214,10 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
     }
 
     function updateLabels() {
-        console.log("Updating the labels");
-
         if (!angular.isDefined(tree) || !angular.isDefined(root)) { return; }
 
-        console.log("Finding node enter");
         var node = g.selectAll(".node")
-
-        node.selectAll("text")
-            .text(function(d) {
-                console.log("Updating " + d.data.id);
-                var index = $scope.nodeMap[d.data.model][d.data.id];
-                console.log(`Node: ${index}`);
-                var node = $scope.nodes[index];
-                console.log("Node: "); console.log(node);
-                var label = d.data.model + ": ";
-                var labelProp = typesService.diffLabelView[d.data.model];
-                if (node && angular.isDefined(labelProp)) {
-                    label += nodeProp(node, labelProp);
-                } else {
-                    label += d.data.id;
-                }
-                return label;
-            });
+        node.selectAll("text").text(label);
     };
 
     function getNodes() {
@@ -249,10 +242,8 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
             if (result.nodes.length < nodePageSize) {
                 stopPollingNodes();
                 // Update labels
-                console.log("Got the nodes");
-                console.log($scope.nodes);
-                console.log("Calling update labels:");
                 updateLabels();
+                $scope.state = 'done';
             }
         }, function(resp) {
             console.log("Error obtaining nodes.");
@@ -260,12 +251,8 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
     }
 
     function nodeClickHandler(d) {
-        console.log(`Node for ${d.data.id} clicked`);
         var index = $scope.nodeMap[d.data.model][d.data.id];
-        console.log("Node index is " + index);
-        console.log($scope.nodeMap);
         if (angular.isDefined(index) && $scope.nodes[index]) {
-            console.log("Setting the details");
             $scope.$apply(function() {
                 $scope.detailNodeType = d.data.model;
                 $scope.detailNode = $scope.nodes[index];
@@ -273,6 +260,19 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
             });
         }
     }
+
+    $scope.humanState = function() {
+        switch ($scope.state) {
+            case 'loadingStructure':
+                return 'Loading Structure';
+            case 'loadingNodes':
+                return 'Loading Nodes';
+            case 'done':
+                return 'Done';
+            default:
+                return 'Unknown';
+        }
+    };
 
     $scope.detailProps = function() {
         var props = [];
@@ -331,9 +331,6 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
             $scope.nodeMap = result.nodemap;
             $scope.nodeCount = result.nodecount;
             $scope.nodes = new Array($scope.nodeCount);
-            console.log("Got the structure.");
-            console.log($scope.frame);
-            console.log($scope.nodeMap);
             pollNodes = $interval(getNodes, pollInterval);
             render();
         }, function(resp) {
@@ -362,6 +359,7 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
     angular.element($window).bind('resize', function() {
         if ($scope.state != 'loadingStructure') {
             render();
+            updateLabels();
         }
     });
 

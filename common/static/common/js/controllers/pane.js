@@ -118,10 +118,12 @@ angular.module('cloudSnitch').controller('PaneController', ['$scope', 'cloudSnit
             $scope.paneObj.search.time,
             $scope.paneObj.search.filters,
             function(data) {
-                var index = $scope.paneObj.stack.length - 1;
-                angular.forEach(data.records, function(item) {
-                    $scope.paneObj.stack[index].results.push(item);
-                });
+                // Check to make sure we are still on search results
+                if ($scope.paneObj.stack.length > 1) {
+                    angular.forEach(data.records, function(item) {
+                        $scope.paneObj.stack[1].results.push(item);
+                    });
+                }
             }
         ).then(function(result) {
             // Do nothing for now
@@ -139,6 +141,7 @@ angular.module('cloudSnitch').controller('PaneController', ['$scope', 'cloudSnit
             record: record,
             type: type
         });
+        $scope.paneObj.loading = false;
     };
 
     $scope.identity = function($index) {

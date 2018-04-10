@@ -237,3 +237,19 @@ div.diffNodeDetail hx-panel {
     background-color: #C8E6C9;
     color: #1B5E20;
 }
+
+.diffBusy {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.diffBusy h2 {
+  width: 350px;
+  text-align: center;
+}
