@@ -20,7 +20,7 @@ div.close-outer {
 
 .configContents {
   max-height: 300px;
-  width: 700px;
+  width: 650px;
 }
 
 .childToggle .hxCol {
@@ -57,6 +57,10 @@ pane {
   border-right: 1px solid #0c7c84;
   width: 800px;
   height: 100%;
+}
+
+pane > hx-panel > hx-panelbody {
+  overflow-x: auto;
 }
 
 hx-panel > hx-panelbody {
