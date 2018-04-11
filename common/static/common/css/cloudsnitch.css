@@ -43,7 +43,6 @@ body > #head {
 .panesContainer {
   display: flex;
   overflow: hidden;
-  height: 100vh;
   position: relative;
   width: 100%;
   backface-visibility: hidden;
