@@ -62,7 +62,6 @@ angular.module('cloudSnitch').controller('PanesController', ['$scope', 'timeServ
             var b = $scope.panes[1].stack[stackSize - 1];
 
             if (a.state != 'details' || b.state != 'details') {
-                console.log("Not diffable: both must be details");
                 return false
             }
 
@@ -82,7 +81,6 @@ angular.module('cloudSnitch').controller('PanesController', ['$scope', 'timeServ
     };
 
     $scope.showDiff = function() {
-        console.log("Showing diff");
         var stackSize = $scope.panes[0].stack.length;
         var a = $scope.panes[0].stack[stackSize - 1];
 
@@ -98,7 +96,6 @@ angular.module('cloudSnitch').controller('PanesController', ['$scope', 'timeServ
     };
 
     $scope.closeDiff = function() {
-        console.log("Closing diff...");
         $scope.diff = undefined;
     }
 

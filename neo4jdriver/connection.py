@@ -17,7 +17,9 @@ class Connection:
         self.password = settings.NEO4J.get('password')
         self.driver = GraphDatabase.driver(
             self.uri,
-            auth=(self.username, self.password)
+            auth=(self.username, self.password),
+            max_connection_lifetime=5 * 60,
+            max_connection_pool_size=50
         )
         self.start = time.time()
 

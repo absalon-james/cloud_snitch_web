@@ -11,6 +11,11 @@ div.close-outer {
   vertical-align: middle;
 }
 
+.searchResultsContainer {
+  max-height: 600px;
+  overflow: auto;
+}
+
 .searchResults tbody tr {
   cursor: pointer;
 }
@@ -26,9 +31,6 @@ div.close-outer {
 .childToggle .hxCol {
   margin-bottom: 5px;
 }
-
-
-
 
 /* body layout */
 
@@ -59,9 +61,11 @@ pane {
   height: 100%;
 }
 
+/*
 pane > hx-panel > hx-panelbody {
   overflow-x: auto;
 }
+*/
 
 hx-panel > hx-panelbody {
   padding : 1rem 1.5rem;
@@ -255,4 +259,44 @@ div.diffNodeDetail hx-panel {
 .diffBusy h2 {
   width: 350px;
   text-align: center;
+}
+
+.hxPagination {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+}
+
+.hxPagination .hxBtn {
+    border: none;
+    min-width: 2.5rem;
+}
+
+.hxBtnGroup > .hxBtn {
+    border-radius: 0;
+}
+
+.hxBtn[disabled] {
+    background-color: transparent;
+    border-color: #d8d8d8;
+    color: #d8d8d8;
+    cursor: not-allowed;
+}
+
+.hxPagination .hxBtn[aria-current="true"] {
+    background-color: #0c7c84;
+    color: #ffffff;
+}
+
+
+.pagination {
+  text-align: center;
+}
+
+.pagedTable th div.titleWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.titleWrapper .iconWrapper {
+  max-width: 1.5em;
 }

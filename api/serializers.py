@@ -61,15 +61,24 @@ class FilterSerializer(Serializer):
     value = CharField(max_length=256, required=True)
 
 
+class OrderSerializer(Serializer):
+    """Serializer for order by on a query."""
+    model = ChoiceField([m.label for m in registry.models.values()])
+    prop = SlugField(max_length=256, required=True)
+    direction = ChoiceField(['asc', 'desc'])
+
+
 class SearchSerializer(Serializer):
     """Serializer for search queries."""
     model = ChoiceField([m.label for m in registry.models.values()])
     time = IntegerField(min_value=0, required=False)
     identity = CharField(max_length=256, required=False)
     filters = ListField(child=FilterSerializer(), required=False)
+    orders = ListField(child=OrderSerializer(), required=False)
 
     page = IntegerField(min_value=0, required=False, default=1)
     pagesize = IntegerField(min_value=1, required=False, default=500)
+    index = IntegerField(min_value=0, required=False)
 
     def validate(self, data):
         model_set = set([t[0] for t in registry.path(data['model'])])
@@ -91,6 +100,24 @@ class SearchSerializer(Serializer):
                         f['prop']
                     )
                 )
+
+        for o in data.get('orders', []):
+            # Make sure order model is in path of search model
+            if o['model'] not in model_set:
+                raise ValidationError(
+                    'Model {} not in path of {}'
+                    .format(o['model'], data['model'])
+                )
+
+            # Make sure order property is property of order model
+            if o['prop'] not in registry.properties(o['model']):
+                raise ValidationError(
+                    'Model {} does not have property {}'.format(
+                        o['model'],
+                        o['prop']
+                    )
+                )
+
         return data
 
 

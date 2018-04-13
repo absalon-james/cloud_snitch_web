@@ -62,7 +62,7 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
 
     $scope.updateObject = function() {
         $scope.objectBusy = true;
-        cloudSnitchApi.search(
+        cloudSnitchApi.searchAll(
             $scope.f.type,
             $scope.identity,
             $scope.f.time,
@@ -87,7 +87,7 @@ angular.module('cloudSnitch').controller('DetailsController', ['$scope', 'cloudS
     $scope.searchChildren = function(childRef, childLabel) {
         $scope.children[childRef].records = [];
         $scope.children[childRef].busy = true;
-        cloudSnitchApi.search(
+        cloudSnitchApi.searchAll(
             childLabel,
             undefined,
             $scope.f.time,

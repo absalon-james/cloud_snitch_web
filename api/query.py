@@ -398,8 +398,11 @@ class Query:
             rows.append(row)
         return rows
 
-    def page(self, page=1, pagesize=100):
-        skip = (page - 1) * pagesize
+    def page(self, page=1, pagesize=100, index=None):
+        if index is not None:
+            skip = max(index - 1, 0)
+        else:
+            skip = (page - 1) * pagesize
         self.skip(skip)
         self.limit(pagesize)
         return self.fetch()

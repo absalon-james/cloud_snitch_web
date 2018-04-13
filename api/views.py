@@ -153,9 +153,16 @@ class ObjectViewSet(viewsets.ViewSet):
                 label=f['model']
             )
 
+        for o in vd.get('orders', []):
+            query.orderby(o['prop'], o['direction'], label=o['model'])
+
         count = query.count()
 
-        records = query.page(page=vd['page'], pagesize=vd['pagesize'])
+        records = query.page(
+            page=vd['page'],
+            pagesize=vd['pagesize'],
+            index=vd.get('index')
+        )
 
         serializer = ModelSerializer({
             'query': str(query),
