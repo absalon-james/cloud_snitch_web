@@ -12,7 +12,6 @@ div.close-outer {
 }
 
 .searchResultsContainer {
-  max-height: 600px;
   overflow: auto;
 }
 
