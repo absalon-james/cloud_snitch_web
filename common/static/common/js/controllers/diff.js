@@ -263,6 +263,8 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
 
     $scope.humanState = function() {
         switch ($scope.state) {
+            case 'empty':
+                return 'No meaningful differences.';
             case 'loadingStructure':
                 return 'Loading Structure';
             case 'loadingNodes':
@@ -326,13 +328,21 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
 
             stopPolling();
 
-            $scope.state = 'loadingNodes';
-            $scope.frame = result.frame;
-            $scope.nodeMap = result.nodemap;
-            $scope.nodeCount = result.nodecount;
-            $scope.nodes = new Array($scope.nodeCount);
-            pollNodes = $interval(getNodes, pollInterval);
-            render();
+            if (result.frame !== null) {
+                $scope.state = 'loadingNodes';
+                $scope.frame = result.frame;
+                $scope.nodeMap = result.nodemap;
+                $scope.nodeCount = result.nodecount;
+                $scope.nodes = new Array($scope.nodeCount);
+                pollNodes = $interval(getNodes, pollInterval);
+                render();
+            } else {
+                $scope.state = 'empty'
+                $scope.frame = null;
+                $scope.nodeMap = null;
+                $scope.nodeCount = 0;
+                $scope.nodes = [];
+            }
         }, function(resp) {
             console.log("error obtaining structure.");
         });
