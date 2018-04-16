@@ -15,7 +15,7 @@ function PagedTableController() {
 }
 
 angular.module('cloudSnitch').component('pagedtable', {
-    templateUrl: '/static/common/html/pagedtable.html',
+    templateUrl: '/static/web/html/pagedtable.html',
     controller: PagedTableController,
     bindings: {
         thing: '<',
@@ -95,7 +95,7 @@ function PagesController() {
 }
 
 angular.module('cloudSnitch').component('pages', {
-    templateUrl: '/static/common/html/pages.html',
+    templateUrl: '/static/web/html/pages.html',
     controller: PagesController,
     bindings: {
         total: '<',
