@@ -1,16 +1,14 @@
 <hx-panel ng-controller="DiffController">
   <hx-panelhead>
-    <div class="hxRow diffCtrls">
-      <div class="hxSpan-6 left">
-        <h4>
-          Diffing {{diff.type}}: {{diff.id}} at time {{diff.leftTime}} and {{diff.rightTime}}
-        </h4>
+    <div class="diffCtrls right">
+      <div class="btnGrpRight hxBtnGroup hxLink">
+        <button class="hxBtn" ng-click="closeDiff()"><hx-icon type="times"></hx-icon></button>
       </div>
-      <div class="hxSpan-6 right">
-        <div class="btnGrpRight hxBtnGroup hxLink">
-          <button class="hxBtn" ng-click="closeDiff()"><hx-icon type="times"></hx-icon></button>
-        </div>
-      </div>
+    </div>
+    <div class="hxBox-xs">
+      <h2>
+        Diffing {{diff.type}}: {{diff.id}} at time {{diff.leftTime}} and {{diff.rightTime}}
+      </h2>
     </div>
   </hx-panelhead>
   <hx-panelbody>
