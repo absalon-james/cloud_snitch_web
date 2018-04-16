@@ -64,7 +64,7 @@ angular.module('cloudSnitch').controller('ResultsController', ['$scope', 'cloudS
     if (!angular.isDefined($scope.f.ctx)) {
         $scope.f.ctx = {
             page: 1,
-            pagesize: 25,
+            pagesize: 15,
             sortColumnIndex: -1,
             sortDirection: 'asc'
         }

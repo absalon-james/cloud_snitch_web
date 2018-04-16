@@ -15,11 +15,15 @@ class Connection:
         self.uri = settings.NEO4J.get('uri')
         self.username = settings.NEO4J.get('username')
         self.password = settings.NEO4J.get('password')
+        self.max_connection_lifetime = \
+            settings.NEO4J.get('max_connection_lifetime', 5 * 60)
+        self.max_connection_pool_size = \
+            settings.NEO4J.get('max_connection_pool_size', 50)
         self.driver = GraphDatabase.driver(
             self.uri,
             auth=(self.username, self.password),
-            max_connection_lifetime=5 * 60,
-            max_connection_pool_size=50
+            max_connection_lifetime=self.max_connection_lifetime,
+            max_connection_pool_size=self.max_connection_pool_size
         )
         self.start = time.time()
 
