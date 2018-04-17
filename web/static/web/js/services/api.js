@@ -1,15 +1,47 @@
-angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', 'timeService', function($http, $q, timeService) {
+angular.module('cloudSnitch').factory('csrfService', [function() {
+    var service = {};
+    var name = '_cloud_snitch_csrf_cookie_';
+    var cookieValue = null;
+
+    service.getCookie = function() {
+        if (cookieValue === null) {
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+        }
+        return cookieValue;
+    };
+
+    return service;
+}]);
+
+angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', 'timeService', 'csrfService', function($http, $q, timeService, csrfService) {
 
     var typesDeferred = $q.defer();
     var service = {};
-
-    var headers = {};
 
     function convertTime(str) {
         var t = timeService.fromstr(str);
         t = timeService.utc(t);
         t = timeService.milliseconds(t);
         return t
+    }
+
+    function makeHeaders() {
+        var headers = {
+            'Content-Type': 'application/json',
+            'Accept-Type': 'application/json',
+            'X-CSRFToken': csrfService.getCookie()
+        }
+        return headers;
     }
 
     service.types = function() {
@@ -59,7 +91,7 @@ angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', 'timeSer
         return $http({
             method: 'POST',
             url: '/api/objects/times/',
-            headers: headers,
+            headers: makeHeaders(),
             data: req
         }).then(function(resp) {
             defer.resolve(resp.data);
@@ -139,10 +171,7 @@ angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', 'timeSer
             method: 'POST',
             url: '/api/objects/search/',
             data: req,
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept-Type': 'application/json'
-            },
+            headers: makeHeaders(),
             }).then(function(resp) {
                 defer.resolve(resp.data);
                 return defer.promise;
@@ -191,10 +220,7 @@ angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', 'timeSer
             req.page = page
             return $http({
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept-Type': 'application/json'
-                },
+                headers: makeHeaders(),
                 url: '/api/objects/search/',
                 data: req
             }).then(function(resp) {
@@ -256,10 +282,7 @@ angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', 'timeSer
             req.page = page
             return $http({
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept-Type': 'application/json'
-                },
+                headers: makeHeaders(),
                 url: '/api/objects/search/',
                 data: req
             }).then(function(resp) {
@@ -291,10 +314,7 @@ angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', 'timeSer
         var defer = $q.defer()
         return $http({
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept-Type': 'application/json'
-            },
+            headers: makeHeaders(),
             url: '/api/objectdiffs/structure/',
             data: req
         }).then(function(resp) {
@@ -320,10 +340,7 @@ angular.module('cloudSnitch').factory('cloudSnitchApi', ['$http', '$q', 'timeSer
         var defer = $q.defer()
         return $http({
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept-Type': 'application/json'
-            },
+            headers: makeHeaders(),
             url: '/api/objectdiffs/nodes/',
             data: req
         }).then(function(resp) {

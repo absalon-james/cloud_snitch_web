@@ -12,7 +12,27 @@
 
   </head>
   <body class="hxHorizontal">
-    <header id="head"><span id="page_title">{% block page_title %}Cloud Snitch{% endblock %}</span></header>
+    <header id="head">
+      <div style="display: flex; align-items: center; height: 100%;">
+        <div class="pageTitle hxSpan-6">
+          <h3><span id="page_title">{% block page_title %}Cloud Snitch{% endblock %}</span></h3>
+        </div>
+
+        <div class="topNav">
+          {% if request.user.is_authenticated %}
+            <hx-disclosure class="hxBtn" aria-controls="userMenu">
+              {{ request.user.username }}
+              <hx-icon type="angle-down"></hx-icon>
+            </hx-disclosure>
+            <hx-menu id="userMenu">
+              <hx-menuitem><a href="{% url 'web:logout' %}">Logout</a></hx-menuitem>
+            </hx-menu>
+          {% else %}
+            Please login
+          {% endif %}
+        </div>
+      </div>
+    </header>
 
     {% block content %}
     <div id="stage">

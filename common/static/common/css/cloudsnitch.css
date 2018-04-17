@@ -34,12 +34,12 @@ div.close-outer {
 /* body layout */
 
 body.hxHorizontal {
-  grid-template-rows: 1.5em 1fr;
+  grid-template-rows: 3.5em 1fr;
 }
 
-body > #head {
+/*body > #head {
   height : 1.5rem;
-}
+}*/
 
 .panesContainer {
   display: flex;
@@ -298,4 +298,20 @@ div.diffNodeDetail hx-panel {
 
 .titleWrapper .iconWrapper {
   max-width: 1.5em;
+}
+
+.topNav {
+  margin-left: auto;
+  max-width: 50%;
+}
+
+.topNav .hxBtn {
+  border: none;
+  color: white;
+}
+
+.topNav .hxBtn:hover {
+  background: black;
+  color: white;
+  border: none;
 }
