@@ -1,7 +1,18 @@
 <VirtualHost *:{{ cloud_snitch_web_port }}>
 	ServerName {{ cloud_snitch_web_server_name }}
+	RewriteEngine On
+	RewriteCond %{HTTPS} !=on
+	RewriteRule ^/?(.*) https://%{HTTP_HOST}/$1 [R,L]
+</VirtualHost>
+
+<VirtualHost *:{{ cloud_snitch_web_ssl_port }}>
+	ServerName {{ cloud_snitch_web_server_name }}
 	ServerAdmin webmaster@localhost
 	# DocumentRoot /var/www/html
+
+	SSLEngine on
+	SSLCertificateFile {{ cloud_snitch_web_ssl_cert }}
+	SSLCertificateKeyFile {{ cloud_snitch_web_ssl_key }}
 
 	Alias /static/ {{ cloud_snitch_web_static_root }}/
 
