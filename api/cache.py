@@ -15,7 +15,10 @@ def cache_key(args, kwargs, prefix='', index=0):
     :returns: Base64 encoded cache key
     :rtype: str
     """
-    key = '{}-{}-{}'.format(prefix, args[index:], kwargs)
+    kwarg_names = [n for n in kwargs]
+    kwarg_names = sorted(kwarg_names)
+    kwarg_tuples = [(n, kwargs[n]) for n in kwarg_names]
+    key = '{}-{}-{}'.format(prefix, args[index:], kwarg_tuples)
     key = str.encode(key)
     key = b64encode(key)
     return key

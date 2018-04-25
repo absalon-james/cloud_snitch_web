@@ -125,11 +125,11 @@ class Query:
             label = self.label
 
         valid_properties = registry.properties(label)
-        if valid_properties is None:
+        if not valid_properties:
             raise InvalidLabelError(label)
 
         if prop not in registry.properties(label):
-            raise InvalidPropertyError(label, prop)
+            raise InvalidPropertyError(prop, label)
 
         if prop in registry.state_properties(label):
             label = '{}_state'.format(label)
