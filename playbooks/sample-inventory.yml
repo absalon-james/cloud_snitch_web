@@ -1,0 +1,17 @@
+---
+all:
+  children:
+    cloud_snitch_web:
+      hosts:
+        localhost: 
+      vars:
+        cloud_snitch_web_neo4j_username: neo4j
+        cloud_snitch_web_neo4j_password: secrete
+        cloud_snitch_web_neo4j_uri: bolt://166.78.156.87 
+    neo4j:
+      hosts:
+        localhost:
+      vars:
+        neo4j_heap_initial_size: 496m
+        neo4j_heap_max_size: 496m
+        neo4j_pagecache_size: 100m

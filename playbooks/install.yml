@@ -1,0 +1,13 @@
+---
+- hosts: cloud_snitch_web
+  roles:
+    - cloud_snitch_web
+  tags:
+    - cloud_snitch_web
+
+- hosts: neo4j
+  roles:
+    - java
+    - neo4j
+  tags:
+    - neo4j
