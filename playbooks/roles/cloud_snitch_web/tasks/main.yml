@@ -34,18 +34,6 @@
     owner: "{{ cloud_snitch_web_user }}"
     group: "{{ cloud_snitch_web_group }}"
 
-- include: apache2.yml
-  tags:
-    - apache
-
-- include: redis.yml
-  tags:
-    - redis
-
-- include: celery.yml
-  tags:
-    - celery
-
 - name: Cloud Snitch Web - Clone repo
   git:
     repo: "{{ cloud_snitch_web_repo }}"
@@ -61,6 +49,18 @@
   notify:
     - Restart Apache2
     - Restart Celery Worker
+
+- include: apache2.yml
+  tags:
+    - apache
+
+- include: redis.yml
+  tags:
+    - redis
+
+- include: celery.yml
+  tags:
+    - celery
 
 - name: Cloud Snitch Web - Migrate
   django_manage:

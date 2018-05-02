@@ -14,6 +14,9 @@
   apt:
     name: "neo4j={{ neo4j_version }}"
 
+- name: Neo4j - Set Initial Password
+  shell: "neo4j-admin set-initial-password '{{ neo4j_password }}'"
+
 - name: Neo4j - configuration
   template:
     src: neo4j.conf.j2
