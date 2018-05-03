@@ -76,17 +76,24 @@ dbms.connectors.default_listen_address={{ neo4j_default_listen_address }}
 # individual advertised_address.
 
 # Bolt connector
-dbms.connector.bolt.enabled={{ neo4j_bolt_enabled }}
 #dbms.connector.bolt.tls_level=OPTIONAL
+dbms.connector.bolt.enabled={{ neo4j_bolt_enabled }}
+{% if neo4j_bolt_enabled == 'true' %}
+dbms.connector.bolt.tls_level={{ neo4j_bolt_tls_level }}
 dbms.connector.bolt.listen_address=:{{ neo4j_bolt_port }}
+{% endif %}
 
 # HTTP Connector. There must be exactly one HTTP connector.
-dbms.connector.http.enabled=true
-dbms.connector.http.listen_address=:{{ neo4j_http_port }}
+dbms.connector.http.enabled={{ neo4j_http_enabled }}
+{% if neo4j_http_enabled == 'true' %}
+dbms.connector.http.listen_address={{ neo4j_http_listen_address }}:{{ neo4j_http_port }}
+{% endif %}
 
 # HTTPS Connector. There can be zero or one HTTPS connectors.
 dbms.connector.https.enabled={{ neo4j_https_enabled }}
+{% if neo4j_https_enabled == 'true' %}
 dbms.connector.https.listen_address=:{{ neo4j_https_port }}
+{% endif %}
 
 # Number of Neo4j worker threads.
 #dbms.threads.worker_count=
@@ -109,8 +116,8 @@ dbms.connector.https.listen_address=:{{ neo4j_https_port }}
 #
 # see: dbms.connector.*.tls_level
 
-#bolt.ssl_policy=legacy
-#https.ssl_policy=legacy
+bolt.ssl_policy={{ neo4j_ssl_policy_name }}
+https.ssl_policy={{ neo4j_ssl_policy_name }}
 
 #*****************************************************************
 # SSL policy configuration
@@ -132,6 +139,7 @@ dbms.connector.https.listen_address=:{{ neo4j_https_port }}
 # Mandatory setting
 
 #dbms.ssl.policy.default.base_directory=certificates/default
+dbms.ssl.policy.{{ neo4j_ssl_policy_name }}.base_directory={{ neo4j_ssl_policy_base_directory }}
 
 # Allows the generation of a fresh private key and a self-signed
 # certificate if none are found in the expected locations. It is
@@ -142,6 +150,7 @@ dbms.connector.https.listen_address=:{{ neo4j_https_port }}
 # this mode.
 
 #dbms.ssl.policy.default.allow_key_generation=false
+dbms.ssl.policy.{{ neo4j_ssl_policy_name }}.allow_key_generation={{ neo4j_ssl_policy_allow_key_generation }}
 
 # Enabling this makes it so that this policy ignores the contents
 # of the trusted_dir and simply resorts to trusting everything.
@@ -149,6 +158,7 @@ dbms.connector.https.listen_address=:{{ neo4j_https_port }}
 # Use of this mode is discouraged. It would offer encryption but no security.
 
 #dbms.ssl.policy.default.trust_all=false
+dbms.ssl.policy.{{ neo4j_ssl_policy_name }}.trust_all={{ neo4j_ssl_policy_trust_all }}
 
 # The private key for the default SSL policy. By default a file
 # named private.key is expected under the base directory of the policy.
@@ -180,6 +190,7 @@ dbms.connector.https.listen_address=:{{ neo4j_https_port }}
 # must be installed in the trusted_dir.
 
 #dbms.ssl.policy.default.client_auth=require
+dbms.ssl.policy.{{ neo4j_ssl_policy_name }}.client_auth={{ neo4j_ssl_policy_client_auth }}
 
 # A comma-separated list of allowed TLS versions.
 # By default TLSv1, TLSv1.1 and TLSv1.2 are allowed.
