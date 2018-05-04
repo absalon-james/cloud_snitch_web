@@ -2,7 +2,7 @@
 	ServerName {{ cloud_snitch_web_server_name }}
 	RewriteEngine On
 	RewriteCond %{HTTPS} !=on
-	RewriteRule ^/?(.*) https://%{HTTP_HOST}/$1 [R,L]
+	RewriteRule ^/?(.*) https://%{HTTP_HOST}:{{ cloud_snitch_web_ssl_port }}/$1 [R,L]
 </VirtualHost>
 
 <VirtualHost *:{{ cloud_snitch_web_ssl_port }}>

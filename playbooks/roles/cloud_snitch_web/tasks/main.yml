@@ -62,11 +62,26 @@
   tags:
     - celery
 
+- name: Cloud Snitch Web - Database Directory
+  file:
+    path: "{{ cloud_snitch_web_project_dir }}/db"
+    state: directory
+    mode: 0700
+    owner: "{{ cloud_snitch_web_user }}"
+    group: "{{ cloud_snitch_web_group }}"
+
 - name: Cloud Snitch Web - Migrate
   django_manage:
     app_path: "{{ cloud_snitch_web_project_dir }}"
     virtualenv: "{{ cloud_snitch_web_venv }}"
     command: "migrate"
+
+- name: Cloud Snitch Web - Database File Permissions
+  file:
+    path: "{{ cloud_snitch_web_project_dir }}/db/db.sqlite3"
+    mode: 0600
+    owner: "{{ cloud_snitch_web_user }}"
+    group: "{{ cloud_snitch_web_group }}"
 
 - name: Cloud Snitch Web - Collect Static
   django_manage:
