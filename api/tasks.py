@@ -62,7 +62,6 @@ def _diffdict(model, identity, left_time, right_time):
     # Mark the diff as running to prevent multiple requests from sechduling
     # the same job.
     key = _diff_cache_key(model, identity, left_time, right_time)
-    cache.set(key, STATUS_RUNNING, TIMEOUT)
 
     # Compute the diff.
     try:
@@ -98,6 +97,9 @@ def objectdiff(model, identity, left_time, right_time):
     if cached is None:
         logger.debug("CACHE MISS")
         try:
+            # Set the key to prevent multiple same jobs.
+            cache.set(key, STATUS_RUNNING, TIMEOUT)
+
             # Schedule the task
             task = _diffdict.delay(model, identity, left_time, right_time)
 
