@@ -10,6 +10,7 @@ from rest_framework.response import Response
 
 from .decorators import cls_cached_result
 
+from .exceptions import JobError
 from .exceptions import JobRunningError
 
 from .serializers import DiffSerializer
@@ -244,6 +245,17 @@ class ObjectDiffViewSet(viewsets.ViewSet):
             status=status.HTTP_202_ACCEPTED
         )
 
+    def _job_error_response(self):
+        """Create a response for a diff that has failed.
+
+        :returns: Response with 500 status code.
+        :rtype: rest_framework.response.Response
+        """
+        return Response(
+            {'status': 'The job failed.'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
     @list_route(methods=['post'])
     def node(self, request):
         """Get a specific node in the diff tree."""
@@ -261,6 +273,8 @@ class ObjectDiffViewSet(viewsets.ViewSet):
             )
         except JobRunningError:
             return self._job_running_response()
+        except JobError:
+            return self._job_error_response()
 
         # 404 if node not found.
         node = diff.getnode(data['node_model'], data['node_identity'])
@@ -292,6 +306,8 @@ class ObjectDiffViewSet(viewsets.ViewSet):
             )
         except JobRunningError:
             return self._job_running_response()
+        except JobError:
+            return self._job_error_response()
 
         results = ModelSerializer({
             'nodes': diff.getnodes(data['offset'], data['limit']),
@@ -308,6 +324,7 @@ class ObjectDiffViewSet(viewsets.ViewSet):
 
         # Make sure both sides are kosher
         self._check_sides(data)
+
         try:
             diff = objectdiff(
                 data['model'],
@@ -317,6 +334,8 @@ class ObjectDiffViewSet(viewsets.ViewSet):
             )
         except JobRunningError:
             return self._job_running_response()
+        except JobError:
+            return self._job_error_response()
 
         # Return the response
         results = ModelSerializer({

@@ -246,7 +246,8 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
                 $scope.state = 'done';
             }
         }, function(resp) {
-            console.log("Error obtaining nodes.");
+            stopPollingNodes();
+            $scope.state = 'error';
         });
     }
 
@@ -265,6 +266,8 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
         switch ($scope.state) {
             case 'empty':
                 return 'No meaningful differences.';
+            case 'error':
+                return 'Error loading diff';
             case 'loadingStructure':
                 return 'Loading Structure';
             case 'loadingNodes':
@@ -344,7 +347,8 @@ angular.module('cloudSnitch').controller('DiffController', ['$scope', '$interval
                 $scope.nodes = [];
             }
         }, function(resp) {
-            console.log("error obtaining structure.");
+            stopPolling();
+            $scope.state = 'error'
         });
     }
 

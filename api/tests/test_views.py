@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from api.exceptions import JobError
 from api.exceptions import JobRunningError
 
 logging.getLogger('neo4j').setLevel(logging.ERROR)
@@ -246,6 +247,16 @@ class TestObjectDiffViewSetNode(BaseApiTestCase):
         self.assertEquals(resp.status_code, status.HTTP_404_NOT_FOUND)
 
     @mock.patch('api.query.Query.fetch', side_effect=[[1], [1]])
+    @mock.patch('api.views.objectdiff', side_effect=JobError())
+    def test_job_error(self, m_diff, m_fetch):
+        self.client.login(**self.credentials)
+        resp = self.client.post(self.baseurl, self.body)
+        self.assertEquals(
+            resp.status_code,
+            status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+    @mock.patch('api.query.Query.fetch', side_effect=[[1], [1]])
     @mock.patch(
         'api.views.objectdiff',
         return_value=FakeDiffResult()
@@ -305,6 +316,16 @@ class TestObjectDiffViewSetNodes(BaseApiTestCase):
         self.assertEquals(resp.status_code, status.HTTP_202_ACCEPTED)
 
     @mock.patch('api.query.Query.fetch', side_effect=[[1], [1]])
+    @mock.patch('api.views.objectdiff', side_effect=JobError())
+    def test_job_error(self, m_diff, m_fetch):
+        self.client.login(**self.credentials)
+        resp = self.client.post(self.baseurl, self.body)
+        self.assertEquals(
+            resp.status_code,
+            status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+    @mock.patch('api.query.Query.fetch', side_effect=[[1], [1]])
     @mock.patch('api.views.objectdiff', return_value=FakeDiffResult())
     def test_nodes(self, m_diff, m_fetch):
         self.client.login(**self.credentials)
@@ -352,11 +373,21 @@ class TestObjectDiffViewSetStructure(BaseApiTestCase):
         self.assertEquals(resp.status_code, status.HTTP_404_NOT_FOUND)
 
     @mock.patch('api.query.Query.fetch', side_effect=[[1], [1]])
-    @mock.patch('api.tasks.objectdiff', side_effect=JobRunningError())
+    @mock.patch('api.views.objectdiff', side_effect=JobRunningError())
     def test_job_running(self, m_diff, m_fetch):
         self.client.login(**self.credentials)
         resp = self.client.post(self.baseurl, self.body)
         self.assertEquals(resp.status_code, status.HTTP_202_ACCEPTED)
+
+    @mock.patch('api.query.Query.fetch', side_effect=[[1], [1]])
+    @mock.patch('api.views.objectdiff', side_effect=JobError())
+    def test_job_error(self, m_diff, m_fetch):
+        self.client.login(**self.credentials)
+        resp = self.client.post(self.baseurl, self.body)
+        self.assertEquals(
+            resp.status_code,
+            status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
     @mock.patch('api.query.Query.fetch', side_effect=[[1], [1]])
     @mock.patch('api.views.objectdiff', return_value=FakeDiffResult())

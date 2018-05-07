@@ -11,12 +11,15 @@ from .cache import cache_key
 from .diff import Diff
 from .diff import DiffResult
 
+from .exceptions import JobError
 from .exceptions import JobRunningError
 
 
 logger = logging.getLogger(__name__)
 STATUS_RUNNING = 1
+STATUS_ERROR = 2
 TIMEOUT = 60 * 60 * 24
+ERROR_TIMEOUT = 60 * 5
 
 
 def _diff_cache_key(model, identity, left_time, right_time):
@@ -60,16 +63,16 @@ def _diffdict(model, identity, left_time, right_time):
     # the same job.
     key = _diff_cache_key(model, identity, left_time, right_time)
     cache.set(key, STATUS_RUNNING, TIMEOUT)
-    d = Diff(model, identity, left_time, right_time)
 
     # Compute the diff.
     try:
+        d = Diff(model, identity, left_time, right_time)
         r = d.result()
         cache.set(key, r.diffdict, TIMEOUT)
         return r.diffdict
     except Exception as e:
         logger.exception('Unable to complete diff.')
-        cache.delete(key)
+        cache.set(key, STATUS_ERROR, ERROR_TIMEOUT)
 
 
 def objectdiff(model, identity, left_time, right_time):
@@ -109,6 +112,11 @@ def objectdiff(model, identity, left_time, right_time):
     elif cached == STATUS_RUNNING:
         logger.debug("CACHE HIT -- STILL RUNNING")
         raise JobRunningError()
+
+    # Raise error if job is in error state
+    elif cached == STATUS_ERROR:
+        logger.debug('CACHE HIT -- ERROR')
+        raise JobError()
 
     # Return diff result
     else:
